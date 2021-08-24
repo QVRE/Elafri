@@ -72,7 +72,7 @@ void ElafriInit() { //Init procedures
 }
 
 void Exit() {
-    write(0,"\e[?1000l\e[?1003l\e[?25h\e[2J\e[H",40);
+    write(0,"\e[?1000l\e[?1003l\e[?25h\e[2J\e[H",30);
     tcsetattr(0, TCSAFLUSH, &oldTermFlags); //reset terminal flags
     exit(0);
 }
