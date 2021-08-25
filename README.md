@@ -7,8 +7,8 @@ require any fancy graphics or advanced audio into practise and consequently
 not have to deal with any troubles that may come from those, may that be having
 to deal with a very big and complex library.
 Elafri will provide Graphics and Text output, Keyboard and Mouse support, Audio
-generation and playback and a package manager for easily wrapping up and saving
-a lot of different data into a single file
+playback and a package manager for easily wrapping up and saving a lot of
+different data into a single file
 
 #### People who can most benefit are those who:
 
