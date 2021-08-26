@@ -1,5 +1,6 @@
 #ifndef _EGFX
 #define _EGFX
+#include "evar.c"
 
 #define RED (color){255,0,0}
 #define YELLOW (color){255,255,0}
@@ -9,9 +10,6 @@
 #define MAGENTA (color){255,0,255}
 
 #define ROT 1024
-
-#include <stdio.h>
-#include <stdlib.h>
 
 typedef struct AColor {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color **pal; u32 w,h,xBlank,yBlank;} gr;
@@ -87,7 +85,7 @@ void GrCircleFilled(gr b, const uvec2 O, int radius, color clr) {
 void draw(gr buf) {
     u32 y=0,x=1;
     color c = buf.pal[0][0];
-    printf("\e[H\e[48;2;%d;%d;%dm", c.r, c.g, c.b);
+    printf("\e[H\e[48;2;%d;%d;%dm ", c.r, c.g, c.b);
 
     print:
     c = buf.pal[y][x];
