@@ -2,12 +2,13 @@
 #define _EGFX
 #include "evar.c"
 
+#define BLACK (color){0,0,0}
+#define WHITE (color){255,255,255}
 #define RED (color){255,0,0}
-#define YELLOW (color){255,255,0}
 #define GREEN (color){0,255,0}
-#define CYAN (color){0,255,255}
 #define BLUE (color){0,0,255}
-#define MAGENTA (color){255,0,255}
+#define YELLOW (color){255,255,0}
+#define CYAN (color){0,255,255}
 
 #define ROT 1024
 
