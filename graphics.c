@@ -47,11 +47,11 @@ gr GrBuffer(u32 width,u32 height,u32 xBlank,u32 yBlank) {
     buf.yBlank = yBlank;
     return buf;
 }
-void GrClear(gr buf) {
-    u32 *ptr = (u32*)buf.pal[0];
+void GrFill(gr buf, const color clr) {
+    color *ptr = buf.pal[0];
     u32 size = (buf.w+buf.xBlank)*buf.h;
     while (size--)
-        *ptr++ = 0;
+        *ptr++ = clr;
 }
 void GrFree(gr buf) {
     free(buf.pal[0]);
@@ -105,6 +105,6 @@ void draw(gr buf) {
 }
 static inline void drawc(gr buffer) { //draw and then clear
     draw(buffer);
-    GrClear(buffer);
+    GrFill(buffer, BLACK);
 }
 #endif
