@@ -64,4 +64,10 @@ pkg ReadPkg(char *filename) {
     fclose(fp);
     return (pkg){files, filecount}; //assemble
 }
+
+void FreePkg(pkg p) {
+    for (u32 i=0; i<p.filecount; i++)
+        free(p.files[i].dat);
+    free(p.files);
+}
 #endif

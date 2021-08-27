@@ -53,6 +53,10 @@ void GrClear(gr buf) {
     while (size--)
         *ptr++ = 0;
 }
+void GrFree(gr buf) {
+    free(buf.pal[0]);
+    free(buf.pal);
+}
 
 void GrLine(gr b, uvec2 A, uvec2 B, color clr) {
     int dx = B.x-A.x; //Δx & Δy
