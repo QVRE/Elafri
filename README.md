@@ -31,11 +31,8 @@ different data into a single file
 Elafri is designed with simplicity and developer freedom in mind.
 The Engine does not make the code you write run on top of it or inside it.
 Instead, the developer is the one who invokes Elafri and choses what code runs
-and when it runs. The entire project (or at least, the base features) is less
-than 1000 lines of code for the main reason that it is important to be able to
-see the end of the tunnel when wanting to find and change something. It is very
-convenient for me, as the developer to have every function and line of code in
-mind and it is easy because there are so few to keep in mind.
+and when it runs. The entire project will stay less than 1000 lines of code in
+order to be easy to read-through and lightweight
 
 ## Tinkering
 
@@ -54,7 +51,9 @@ The Frame rate system is housed inside `Main()` and is only ~16 lines long.
 As such, it is very easy to change, replace or just remove altogether without
 even leaving main.c
 
-#### Want to fetch User Input?
+## FAQ
+
+#### How do I fetch User Input?
 Input() is the function that sorts and simplifies stdin into:
 
 - `m` which is a 2D Vector that holds mouse coordinates
