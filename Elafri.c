@@ -7,7 +7,7 @@
 #include "graphics.c"
 #include "pkg.c"
 
-#define INSERT 50
+#define INSERT 50 //in kbd[], this would be 255 50
 #define DELETE 51
 #define PgUP 53
 #define PgDown 54
@@ -20,7 +20,7 @@
 
 u8 input[256]; //we read stdin to here
 u8 kbd[64]; //parsed keyboard input
-u32 kbdSize, mC; //mouse code
+u32 kbdSize, mC; //size of input buffer & mouse code
 uvec2 m; //mouse cords
 uvec2 res; //term resolution
 
