@@ -24,7 +24,7 @@ void WritePkg(char *filename, pkg p, u32 max_files) {
     u32 freefl = max_files - filecount;
     void **data = malloc(filecount*sizeof(void*)); //backup pointers to data
 
-    u64 loc = 2*sizeof(u32)+max_files*sizeof(finfo); //header + table size
+    u64 loc = 2*sizeof(u32)+max_files*sizeof(finfo); //offset into start of data
     for (u32 i=0; i<filecount; i++) {
         data[i] = (void*)file_info[i].location; //save pointer
         file_info[i].location = loc; //set location
@@ -45,10 +45,10 @@ void WritePkg(char *filename, pkg p, u32 max_files) {
 
 pkg ReadPkg(char *filename) {
     FILE *fp = fopen(filename,"rb");
-    u32 totalf, freef, filecount; //get filecount
-    fread(&totalf, 1, sizeof(u32), fp); //read header
-    fread(&freef, 1, sizeof(u32), fp);
-    filecount = totalf - freef;
+    u32 totalf, freef, filecount;
+    fread(&totalf, 1, sizeof(u32), fp); //table size
+    fread(&freef, 1, sizeof(u32), fp); //free space
+    filecount = totalf - freef; //get taken file count
 
     pfile *files = malloc(filecount*sizeof(pfile)); //get files
     fread(files, filecount, sizeof(pfile), fp); //read taken table
@@ -63,6 +63,38 @@ pkg ReadPkg(char *filename) {
 
     fclose(fp);
     return (pkg){files, filecount}; //assemble
+}
+
+void AddFile(char *package, pfile file) {
+    FILE *fp = fopen(package,"r+b");
+    u32 totalf, freef, filecount;
+    fread(&totalf, 1, sizeof(u32), fp);
+    fread(&freef, 1, sizeof(u32), fp);
+    filecount = totalf - freef; //preserve offset
+    freef--; //since we're adding a file
+    fseek(fp, 4, SEEK_SET);
+    fwrite(&freef, 1, sizeof(u32), fp);
+    finfo *table = malloc(filecount*sizeof(finfo));
+    fread(table, filecount, sizeof(finfo), fp); //get table
+
+    for (u32 i=0; i<filecount; i++) { //find available space
+        const u64 end = table[i].location + table[i].size; //where file ends
+        u64 space = ~0; //how much free space after file ends
+        for (u32 j=0; j<filecount && space; j++)
+            if (table[j].location >= end)
+                space = table[j].location - end;
+        if (space)
+            if (space >= file.size) {
+                const void *data = file.dat;
+                finfo *header = (finfo*)&file;
+                header->location = end;
+                fwrite(header, 1, sizeof(finfo), fp);
+                fseek(fp, end, SEEK_SET);
+                fwrite(data, file.size, 1, fp);
+                break;
+            }
+    }
+    fclose(fp);
 }
 
 void FreePkg(pkg p) {
