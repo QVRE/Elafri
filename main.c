@@ -9,7 +9,7 @@ int main()
 {
     ElafriInit();
 
-    gr Gr = GrBuffer(rx,ry,rx/4,ry/2);
+    gr Gr = GrBuffer(res.x,res.y,res.x/4,res.y/3);
 
     /*Timekeeping-related Inits*/
     InitTimer(ftimer); //timer
