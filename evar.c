@@ -1,4 +1,4 @@
-#ifndef _EVAR //file made to keep Elafri addons distinct
+#ifndef _EVAR //file made to keep Elafri addons more modular
 #define _EVAR //make sure to compile with -flto to remove unnecessary garbage
 #define u8 unsigned char
 #define u16 unsigned short
@@ -25,19 +25,23 @@
 #include <math.h>
 
 typedef struct FVector2 {F32 x,y;} vec2;
+typedef struct FVector3 {F32 x,y,z;} vec3;
 typedef struct UVector2 {u32 x,y;} uvec2;
 typedef struct IVector2 {int x,y;} ivec2;
 
 int s(int x) { //get sign of 32 bit integer
     return -(((u32)x>>31)*2-1);
 }
-int mod32(int x, int m) { //the way actual mod works
+F32 sF32(const F32 x) {
+    return (x>0) - (x<0);
+}
+int mod32(int x, int m) { //actual modulo for negative numbers
     return (x%m + m)%m;
 }
 long mod64(long x, long m) {
     return (x%m + m)%m;
 }
 F32 modF32(F32 x, F32 m) {
-    return fmod(fmod(x,m)+m,m);
+    return fmodf(fmodf(x,m)+m,m);
 }
 #endif
