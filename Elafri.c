@@ -41,7 +41,7 @@ void ElafriInit() { //Init procedures
 
     write(0,"\e[?1000h\e[?1003h\e[?25l",22); //enable mouse tracking and hide term cursor
     GetResolution();
-    GrInit();
+    GrInit(res.x*res.y*19);
 }
 
 void Exit() {

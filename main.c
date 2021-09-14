@@ -22,9 +22,9 @@ int main()
         StartTimer(ftimer);
 
         Input(&mtv);
-        GrLine(Gr,(uvec2){0,0},m,CYAN);
-        GrCircle(Gr,m,5,64,GREEN);
-        drawc(Gr);
+        GrLine(&Gr,(uvec2){0,0},m,CYAN);
+        GrCircle(&Gr,m,5,64,GREEN);
+        drawc(&Gr);
 
         StopTimer(ftimer);
         exec_time = mod32(dt_usec(ftimer),MPS); //Compute execution Δt
