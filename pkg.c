@@ -5,7 +5,7 @@
 typedef struct PackageFileInfo {
     u64 ID; //8 byte unique identifier
     u64 location; //in file
-    u32 size, elsize; //true size in bytes & how many elements there are
+    u32 size, elsize; //total size in bytes & how many elements there are
 } finfo;
 typedef struct PackageFile {
     u64 ID;
@@ -70,30 +70,33 @@ void AddFile(char *package, pfile file) {
     u32 totalf, freef, filecount;
     fread(&totalf, 1, sizeof(u32), fp);
     fread(&freef, 1, sizeof(u32), fp);
-    filecount = totalf - freef; //preserve offset
+    filecount = totalf - freef;
     freef--; //since we're adding a file
-    fseek(fp, 4, SEEK_SET);
-    fwrite(&freef, 1, sizeof(u32), fp);
-    finfo *table = malloc(filecount*sizeof(finfo));
-    fread(table, filecount, sizeof(finfo), fp); //get table
+    fseek(fp, sizeof(u32), SEEK_SET);
+    fwrite(&freef, 1, sizeof(u32), fp); //overwrite free file count
+    finfo *table = malloc((filecount+1)*sizeof(finfo)); //1st points to start
+    fread(&table[1], filecount, sizeof(finfo), fp); //get table
+    table[0] = (finfo){0,2*sizeof(u32)+totalf*sizeof(finfo)};
+    filecount++;
 
     for (u32 i=0; i<filecount; i++) { //find available space
         const u64 end = table[i].location + table[i].size; //where file ends
         u64 space = ~0; //how much free space after file ends
-        for (u32 j=0; j<filecount && space; j++)
-            if (table[j].location >= end)
+        for (u32 j=1; space && j<filecount; j++)
+            if (table[j].location >= end && table[j].location - end < space)
                 space = table[j].location - end;
         if (space)
             if (space >= file.size) {
                 const void *data = file.dat;
                 finfo *header = (finfo*)&file;
-                header->location = end;
+                header->location = end; //set the location to byte offset
                 fwrite(header, 1, sizeof(finfo), fp);
                 fseek(fp, end, SEEK_SET);
                 fwrite(data, file.size, 1, fp);
                 break;
             }
     }
+    free(table);
     fclose(fp);
 }
 
