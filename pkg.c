@@ -100,6 +100,33 @@ void AddFile(char *package, pfile file) {
     fclose(fp);
 }
 
+void RmFile(char *package, u64 ID) {
+	FILE *fp = fopen(package,"r+b");
+    u32 totalf, freef, filecount;
+    fread(&totalf, 1, sizeof(u32), fp);
+    fread(&freef, 1, sizeof(u32), fp);
+    filecount = totalf - freef;
+    freef++; //since we're removing a file
+    fseek(fp, sizeof(u32), SEEK_SET);
+    fwrite(&freef, 1, sizeof(u32), fp);
+	finfo *table = malloc(filecount*sizeof(finfo));
+    fread(table, filecount, sizeof(finfo), fp); //get table
+
+	for (u32 i=0; i<filecount; i++)
+		if (ID == table[i].ID) { //found the selected file
+			filecount--;
+			if (i < filecount) {
+				fseek(fp, 2*sizeof(u32)+filecount*sizeof(finfo), SEEK_SET);
+				fread(table, 1, sizeof(finfo), fp);
+				fseek(fp, 2*sizeof(u32)+i*sizeof(finfo), SEEK_SET);
+				fwrite(table, 1, sizeof(finfo), fp);
+			}
+			break;
+		}
+    free(table);
+    fclose(fp);
+}
+
 void FreePkg(pkg p) {
     for (u32 i=0; i<p.filecount; i++)
         free(p.files[i].dat);
