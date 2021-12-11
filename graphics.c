@@ -65,7 +65,7 @@ void GrFree(gr buf) {
     free(buf.pal);
 }
 
-void GrLine(gr *b, uvec2 A, uvec2 B, color clr) {
+void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
     int dx = B.x-A.x; //Δx & Δy
     int dy = B.y-A.y;
     b->pal[B.y][B.x] = clr;
@@ -76,24 +76,24 @@ void GrLine(gr *b, uvec2 A, uvec2 B, color clr) {
         for (int c=0,i=A.y; i != B.y; i+=s(dy), c++)
             b->pal[i][A.x+(c*dx)/abs(dy)] = clr;
 }
-void GrTriangleWire(gr *buf, uvec2 A, uvec2 B, uvec2 C, color clr) {
+void GrTriangleWire(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
     GrLine(buf, A, B, clr);
     GrLine(buf, B, C, clr);
     GrLine(buf, C, A, clr);
 }
-void GrTriangle(gr *buf, uvec2 A, uvec2 B, uvec2 C, color clr) {
-
+void GrTriangle(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
+	
 }
 
-void GrCircle(gr *b, const uvec2 O, int radius, int skip, color clr) {
+void GrCircle(gr *b, const ivec2 O, int radius, int skip, color clr) {
     for (int i=0; i<ROT; i+=skip) //loop through precomputes
-        b->pal[(int)O.y+(int)round(wsin[i]*radius)][(int)O.x+(int)round(wcos[i]*2*radius)] = clr;
+        b->pal[O.y+(int)roundf(wsin[i]*radius)][O.x+(int)roundf(wcos[i]*2*radius)] = clr;
 }
-void GrCircleFilled(gr *b, const uvec2 O, const int radius, color clr) {
+void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
     for(int y=-radius; y<=radius; y++)
         for(int x=-2*radius; x<=2*radius; x++)
             if(((x*x)>>2)+y*y <= radius*radius) //check if inside
-                b->pal[(int)O.y+y][(int)O.x+x] = clr;
+                b->pal[O.y+y][O.x+x] = clr;
 }
 
 void gremit(u8 val, const u32 end) { //convert u8 to ASCII decimal + add an extra char

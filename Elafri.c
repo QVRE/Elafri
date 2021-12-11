@@ -21,7 +21,7 @@
 u8 input[256]; //we read stdin to here
 u8 kbd[64]; //parsed keyboard input
 u32 kbdSize, mC; //size of input buffer & mouse code
-uvec2 m; //mouse cords
+ivec2 m; //mouse cords
 uvec2 res; //term resolution
 
 struct termios oldTermFlags;
@@ -72,7 +72,7 @@ void Input(struct timeval *mtv) { //read stdin and sort kbd and mouse input
                             case 77: //Mouse Input
                                 kbdSize-=2;
                                 mC = input[i+3];
-                                m = (uvec2){input[i+4]-33, input[i+5]-33};
+                                m = (ivec2){input[i+4]-33, input[i+5]-33};
                                 i+=5;
                                 break;
                             case 49: //F5-8 are ordered as 4-7
