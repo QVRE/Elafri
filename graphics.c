@@ -22,7 +22,8 @@ F32 *wcos;
 char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
 
-color blankbuf[512];
+color blankbuf_d[768];
+color *blankbuf = blankbuf_d + 128;
 
 static inline void GrInit(u32 grout_size) {
     for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
@@ -37,8 +38,8 @@ static inline void GrInit(u32 grout_size) {
 gr GrBuffer(u32 width,u32 height,u32 xBlank,u32 yBlank) {
     gr buf;
     //allocate line pointers
-    buf.pal = malloc((height+yBlank*2)*sizeof(color*)) + yBlank*sizeof(color*);
-    buf.pal[0] = calloc((width+xBlank)*height,sizeof(color));
+    buf.pal = (color**)malloc((height+yBlank*2)*sizeof(color*)) + yBlank;
+    buf.pal[0] = calloc((width+xBlank)*height+xBlank,sizeof(color)) + xBlank;
 
     //make blanking areas so that out-of-screen graphics doesn't always crash or clip
     for (int i=1; i<height; i++) {
