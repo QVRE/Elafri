@@ -22,7 +22,7 @@ int main()
         StartTimer(ftimer);
 
         Input(&mtv);
-        GrLine(&Gr,(uvec2){0,0},m,CYAN);
+        GrLine(&Gr,(ivec2){0,0},m,CYAN);
         GrCircle(&Gr,m,5,64,GREEN);
         drawc(&Gr);
 
