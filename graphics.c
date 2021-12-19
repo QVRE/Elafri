@@ -132,11 +132,11 @@ void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
 
 void gremit(u8 val, const u32 end) { //convert u8 to ASCII decimal + add an extra char
     u32 pair = end; //lower part is set to ending character. Things are printed low to high
-    u32 size = 1; //so far, size is 1
+    u32 size = 1;
     while (val) {
-        pair <<= 8; //shift to insert new char
-        pair ^= '0' + val % 10; //get our base 10 digit
-        val /= 10; //shift to the right in base 10
+        pair <<= 8;
+        pair ^= '0' + val % 10;
+        val /= 10;
         size++;
     }
     *(u32*)(&grout[groff]) = pair; //emit pair to grout
@@ -146,16 +146,16 @@ void draw(gr *buf) {
     groff = 3; //first 3 bytes will always be the escape code to go to 0,0
     color last = BLACK; //small optimization, kinda similar to RLE
     u32 x=0, y=0;
-    color c; //makes code nicer, accessing this instead of buf->pal[y][x]
+    color c;
 
     draw:
     c = buf->pal[y][x];
-    if (c.r!=last.r || c.g!=last.g || c.b!=last.b) { //check if this is same as the previous
+    if (c.r!=last.r || c.g!=last.g || c.b!=last.b) {
         *(u64*)(&grout[groff]) = 0x3b323b38345b1b; // \e[48;2; backwards
         groff += 7;
         gremit(c.r,';'); //emit red value in ASCII + a semicolon at the end (for an ESC seq)
         gremit(c.g,';'); //same with green
-        gremit(c.b,'m'); //complete sequence with m for color
+        gremit(c.b,'m'); //complete sequence with m for color (escape sequence)
     }
     last = c;
     grout[groff] = (!c.a * ' ') ^ c.a; //4th byte of color var is used as ASCII char
