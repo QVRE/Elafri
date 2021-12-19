@@ -22,7 +22,7 @@ F32 *wcos;
 char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
 
-color blankbuf_d[768];
+color blankbuf_d[448];
 color *blankbuf = blankbuf_d + 128;
 
 static inline void GrInit(u32 grout_size) {
@@ -83,7 +83,40 @@ void GrTriangleWire(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
     GrLine(buf, C, A, clr);
 }
 void GrTriangle(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
-	
+	ivec2 swap; //swap conditionally to order from highest to lowest point
+	if (A.y > B.y)
+		swap = A, A = B, B = swap;
+	if (B.y > C.y)
+		swap = B, B = C, C = swap;
+	if (A.y > B.y)
+		swap = A, A = B, B = swap;
+	int i = A.y;
+	F64 s1, s2, l, r; //steps used in loops
+	if (B.y > A.y) {
+		s1 = (F64)(B.x-A.x) / (B.y-A.y), s2 = (F64)(C.x-A.x) / (C.y-A.y);
+		if (s2 < s1) //make sure it's left to right
+			l = s1, s1 = s2, s2 = l;
+		l=A.x, r=A.x;
+		buf->pal[A.y][A.x] = clr;
+		do { //Draw from Ay -> By
+			l += s1, r += s2, i++;
+			for (int j=round(l); j<=round(r); j++)
+				buf->pal[i][j] = clr;
+		} while (i < B.y);
+	} else if (C.y > B.y) { //means Ay = By so we treat it as upside down triangle
+		if (A.x < B.x) //left to right order
+			l = A.x, r = B.x, s1 = (F64)(C.x-A.x)/(C.y-A.y), s2 = (F64)(C.x-B.x)/(C.y-B.y);
+		else r = A.x, l = B.x, s2 = (F64)(C.x-A.x)/(C.y-A.y), s1 = (F64)(C.x-B.x)/(C.y-B.y);
+		goto Draw2Cy;
+	}
+	if (C.y > B.y) {
+		s1 = (F64)(C.x-l) / (C.y-i), s2 = (F64)(C.x-r) / (C.y-i);
+		Draw2Cy: do { //Draw from By -> Cy
+			for (int j=round(l); j<=round(r); j++)
+				buf->pal[i][j] = clr;
+			l += s1, r += s2, i++;
+		} while (i <= C.y);
+	}
 }
 
 void GrCircle(gr *b, const ivec2 O, int radius, int skip, color clr) {
