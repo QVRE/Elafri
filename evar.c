@@ -10,6 +10,7 @@
 #define max(x,y) ((x) > (y) ? (x) : (y))
 #define min(x,y) ((x) < (y) ? (x) : (y))
 #define pi 3.1415926535897932384626433832795
+#define ROT 1024 //accuracy of precomputes for sine/cosine
 
 #define InitTimer(t) struct timeval t ## _tstart, t ## _tend
 #define StartTimer(t) gettimeofday(&t ## _tstart, NULL)
@@ -28,6 +29,17 @@ typedef struct FVector2 {F32 x,y;} vec2;
 typedef struct FVector3 {F32 x,y,z;} vec3;
 typedef struct UVector2 {u32 x,y;} uvec2;
 typedef struct IVector2 {int x,y;} ivec2;
+
+F32 sinebuf[ROT*2+ROT/4]; //just some precomputes
+F32 *wsin;
+F32 *wcos;
+
+static inline void SineInit() {
+	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
+        sinebuf[i] = sinf((2*pi/ROT)*i);
+    wsin = sinebuf+ROT;
+    wcos = &wsin[ROT/4];
+}
 
 int s(int x) { //get sign of 32 bit integer
     return -(((u32)x>>31)*2-1);

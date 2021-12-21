@@ -10,14 +10,8 @@
 #define YELLOW (color){255,255}
 #define CYAN (color){0,255,255}
 
-#define ROT 1024
-
 typedef struct AColor {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color **pal; u32 w,h,xBlank,yBlank;} gr;
-
-F32 sinebuf[ROT*2+ROT/4]; //just some precomputes
-F32 *wsin;
-F32 *wcos;
 
 char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
@@ -26,11 +20,7 @@ color blankbuf_d[448];
 color *blankbuf = blankbuf_d + 128;
 
 static inline void GrInit(u32 grout_size) {
-    for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
-        sinebuf[i] = sinf((2*pi/ROT)*i);
-    wsin = sinebuf+ROT;
-    wcos = &wsin[ROT/4];
-
+    SineInit();
     grout = malloc(grout_size);
     grout[0] = '\e', grout[1] = '[', grout[2] = 'H'; //first 3 bytes always do home escape code
 }
