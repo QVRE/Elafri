@@ -36,24 +36,24 @@ F32 *wcos;
 
 static inline void SineInit() {
 	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
-        sinebuf[i] = sinf((2*pi/ROT)*i);
-    wsin = sinebuf+ROT;
-    wcos = &wsin[ROT/4];
+		sinebuf[i] = sinf((2*pi/ROT)*i);
+	wsin = sinebuf+ROT;
+	wcos = &wsin[ROT/4];
 }
 
 int s(int x) { //get sign of 32 bit integer
-    return -(((u32)x>>31)*2-1);
+	return -(((u32)x>>31)*2-1);
 }
 F32 sF32(const F32 x) {
-    return (x>0) - (x<0);
+	return (x>0) - (x<0);
 }
 int mod32(int x, int m) { //actual modulo for negative numbers
-    return (x%m + m)%m;
+	return (x%m + m)%m;
 }
 long mod64(long x, long m) {
-    return (x%m + m)%m;
+	return (x%m + m)%m;
 }
 F32 modF32(F32 x, F32 m) {
-    return fmodf(fmodf(x,m)+m,m);
+	return fmodf(fmodf(x,m)+m,m);
 }
 #endif
