@@ -44,7 +44,7 @@ static inline void SineInit() {
 int s(int x) { //get sign of 32 bit integer
 	return -(((u32)x>>31)*2-1);
 }
-F32 sF32(const F32 x) {
+int sF32(const F32 x) {
 	return (x>0) - (x<0);
 }
 int mod32(int x, int m) { //actual modulo for negative numbers
