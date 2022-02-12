@@ -54,10 +54,10 @@ I don't abandon this project
 
 I am not sure if I will see an email as it is by pure chance that I check it
 
-Email: nikos.raudonus@gmail.com
-Telegram: @Nik051105
-Discord: Nik#6291
-Tox: 23F3ECA183E9824F271FD3A90ECBE54FCE2BC847228487F6E152F20B0D4E3D4B910873FBB377
+- Email: nikos.raudonus@gmail.com
+- Telegram: @Nik051105
+- Discord: Nik#6291
+- Tox: 23F3ECA183E9824F271FD3A90ECBE54FCE2BC847228487F6E152F20B0D4E3D4B910873FBB377
 
 ## Donations
 
@@ -65,6 +65,6 @@ I do not expect donations nor do I recommend them, they are less of a need
 than they are an incentive for me to work more. I'm mostly just curious if
 anyone would even donate for something like this.
 
-Monero: 44HT58Pq2rsBU11x7wCC8BLnJ9m9zvS73YaAQW2HvW31c7zbC2KBUMdTdd13VLg5Gs6DZDiXyfBV8V1unUuSyJDvPBpwuEd
-Ethereum: 0x6c755184CFcD7bFa0c4bFb59357f3e9D56C4A082
-Bitcoin: bc1qxt6lg7gelss8pghj98uhxhznj5wvqxa5kaxw4n
+- Monero: 44HT58Pq2rsBU11x7wCC8BLnJ9m9zvS73YaAQW2HvW31c7zbC2KBUMdTdd13VLg5Gs6DZDiXyfBV8V1unUuSyJDvPBpwuEd
+- Ethereum: 0x6c755184CFcD7bFa0c4bFb59357f3e9D56C4A082
+- Bitcoin: bc1qxt6lg7gelss8pghj98uhxhznj5wvqxa5kaxw4n
