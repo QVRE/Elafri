@@ -1,2 +1,7 @@
+BUILD_FLAGS = -O3 -flto -lm
+
 default: main.c
-	gcc -O2 -flto -lm main.c -o out
+	$(CC) $(BUILD_FLAGS) main.c -o out
+
+clean:
+	rm out

@@ -1,2 +1,7 @@
+BUILD_FLAGS = -O3 -flto -fno-math-errno -lm -lSDL2
+
 default: main.c
-	gcc -O2 -flto -fno-math-errno -lSDL2 -lm main.c -o out
+	$(CC) $(BUILD_FLAGS) main.c -o example
+
+clean:
+	rm example
