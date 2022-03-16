@@ -5,7 +5,7 @@
 #include <termios.h> //for term flags
 #include <sys/ioctl.h>
 #include "graphics.c"
-#include "pkg.c"
+//#include "pkg.c"
 
 #define INSERT 50 //in kbd[], this would be 255 50
 #define DELETE 51

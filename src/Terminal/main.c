@@ -9,7 +9,7 @@ int main()
 {
 	ElafriInit(); //calls all the init functions, input, term flags, sine, output buffer
 
-	gr Gr = GrBuffer(res.x,res.y,10,8); //allocates drawing buffer with blanking spaces
+	gr Gr = GrBuffer(res.x,res.y); //allocates drawing buffer with blanking spaces
 
 	/*Timekeeping-related Inits*/
 	InitTimer(ftimer); //timer

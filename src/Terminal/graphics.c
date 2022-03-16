@@ -11,7 +11,7 @@
 #define CYAN (color){0,255,255}
 
 typedef struct AColor {u8 r,g,b,a;} color;
-typedef struct GrBuffer {color **pal; u32 w,h,xBlank,yBlank;} gr;
+typedef struct GrBuffer {color *pal; u32 w,h;} gr;
 
 char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
@@ -25,47 +25,33 @@ static inline void GrInit(u32 grout_size) {
 	grout[0] = '\e', grout[1] = '[', grout[2] = 'H'; //first 3 bytes always do home escape code
 }
 
-gr GrBuffer(u32 width,u32 height,u32 xBlank,u32 yBlank) {
-	gr buf;
-	//allocate line pointers
-	buf.pal = (color**)malloc((height+yBlank*2)*sizeof(color*)) + yBlank;
-	buf.pal[0] = calloc((width+xBlank)*height+xBlank,sizeof(color)) + xBlank;
-
-	//make blanking areas so that out-of-screen graphics doesn't always crash or clip
-	for (int i=1; i<height; i++) {
-		if (i<=yBlank) { //assuming yBlank <= height
-			buf.pal[-i] = blankbuf;
-			buf.pal[height-1+i] = blankbuf;
-		}
-		buf.pal[i] = buf.pal[i-1]+width+xBlank;
-	}
-	buf.w = width;
-	buf.h = height;
-	buf.xBlank = xBlank;
-	buf.yBlank = yBlank;
-	return buf;
+gr GrBuffer(u32 width, u32 height) {
+	return (gr){calloc(width*height, sizeof(color)), width, height};
+}
+static inline void GrPixel(gr *buf, int x, int y, color clr) {
+	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
+		buf->pal[y*buf->w+x] = clr;
 }
 void GrFill(gr *buf, const color clr) {
-	color *ptr = buf->pal[0]; //point to start of graphics buffer
-	u32 size = (buf->w+buf->xBlank)*buf->h;
+	color *ptr = buf->pal; //point to start of graphics buffer
+	u32 size = buf->w*buf->h;
 	while (size--)
 		*ptr++ = clr;
 }
-void GrFree(gr buf) {
-	free(buf.pal[0]);
-	free(buf.pal);
+void GrFree(gr *buf) {
+	free(buf->pal);
 }
 
 void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
 	int dx = B.x-A.x; //Δx & Δy
 	int dy = B.y-A.y;
-	b->pal[B.y][B.x] = clr;
+	GrPixel(b, B.x, B.y, clr);
 	if (abs(dx) > abs(dy))
 		for (int c=0,i=A.x; i != B.x; i+=s(dx), c++)
-			b->pal[A.y+(c*dy)/abs(dx)][i] = clr;
+			GrPixel(b, i, A.y+(c*dy)/abs(dx), clr);
 	else
 		for (int c=0,i=A.y; i != B.y; i+=s(dy), c++)
-			b->pal[i][A.x+(c*dx)/abs(dy)] = clr;
+			GrPixel(b, A.x+(c*dx)/abs(dy), i, clr);
 }
 void GrTriangleWire(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
 	GrLine(buf, A, B, clr);
@@ -87,11 +73,11 @@ void GrTriangle(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
 		if (s2 < s1) //make sure it's left to right
 			l = s1, s1 = s2, s2 = l;
 		l=A.x, r=A.x;
-		buf->pal[A.y][A.x] = clr;
+		GrPixel(buf, A.x, A.y, clr);
 		do { //Draw from Ay -> By
 			l += s1, r += s2, i++;
 			for (int j=round(l); j<=round(r); j++)
-				buf->pal[i][j] = clr;
+				GrPixel(buf, j, i, clr);
 		} while (i < B.y);
 	} else if (C.y > B.y) { //means Ay = By so we treat it as upside down triangle
 		if (A.x < B.x) //left to right order
@@ -103,7 +89,7 @@ void GrTriangle(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
 		s1 = (F64)(C.x-l) / (C.y-i), s2 = (F64)(C.x-r) / (C.y-i);
 Draw2Cy: do { //Draw from By -> Cy
 			 for (int j=round(l); j<=round(r); j++)
-				 buf->pal[i][j] = clr;
+				GrPixel(buf, j, i, clr);
 			 l += s1, r += s2, i++;
 		 } while (i <= C.y);
 	}
@@ -111,13 +97,13 @@ Draw2Cy: do { //Draw from By -> Cy
 
 void GrCircle(gr *b, const ivec2 O, int radius, int skip, color clr) {
 	for (int i=0; i<ROT; i+=skip) //loop through precomputes
-		b->pal[O.y+(int)roundf(wsin[i]*radius)][O.x+(int)roundf(wcos[i]*2*radius)] = clr;
+		GrPixel(b, O.x+(int)roundf(wcos[i]*radius), O.y+(int)roundf(wsin[i]*radius), clr);
 }
 void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
-	for(int y=-radius; y<=radius; y++)
-		for(int x=-2*radius; x<=2*radius; x++)
-			if(((x*x)>>2)+y*y <= radius*radius) //check if inside
-				b->pal[O.y+y][O.x+x] = clr;
+	for (int y=-radius; y<=radius; y++)
+		for (int x=radius; x<=radius; x++)
+			if (x*x+y*y <= radius*radius) //check if inside
+				GrPixel(b, O.x+x, O.y+y, clr);
 }
 
 void gremit(u8 val, const u32 end) { //convert u8 to ASCII decimal + add an extra char
@@ -139,7 +125,7 @@ void draw(gr *buf) {
 	color c;
 
 	draw:
-	c = buf->pal[y][x];
+	c = buf->pal[y*buf->w+x];
 	if (c.r!=last.r || c.g!=last.g || c.b!=last.b) {
 		*(u64*)(&grout[groff]) = 0x3b323b38345b1b; // \e[48;2; backwards
 		groff += 7;
