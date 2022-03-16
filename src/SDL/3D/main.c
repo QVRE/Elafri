@@ -4,6 +4,68 @@
 #define FPS 60
 #define MPS 1000000 // s/μs
 
+//Some small code I wrote to read a basic untextured / uncolored 3D object file
+obj ReadObjFile(char *filename) {
+	FILE *fp = fopen(filename, "r");
+	F32 a,b,c; //these are used temporarily
+	u32 v[3],i,w; //3 temp face vertices and counters
+	u32 v_off=0, f_off=0, v_alloc=128, f_alloc=64; //offsets and alloc sizes
+	vec3 *vert = malloc(v_alloc*sizeof(vec3)), *norm = malloc(f_alloc*sizeof(vec3));
+	face *faces = malloc(f_alloc*sizeof(face));
+	char ch, buf[256];
+	while ((ch=getc(fp)) != EOF) {
+		switch (ch) {
+			case 'v':
+				if (getc(fp) == ' ') { //make sure not vn or vt
+					fscanf(fp, "%f%f%f\n", &a, &b, &c);
+					vert[v_off] = (vec3){a,b,c};
+					v_off++;
+					if (v_off >= v_alloc) {
+						v_alloc *= 2;
+						vert = realloc(vert, v_alloc*sizeof(vec3));
+					}
+				}
+				break;
+			case 'f':
+				fgets(buf, 256, fp); //get line, we have to process it manually
+				w = 1, i = 0;
+				while (buf[w]) {
+					if (buf[w] >= '0' && buf[w] <= '9') {
+						sscanf(&buf[w], "%u", &v[i]);
+						v[i]--, i++;
+						if (i > 2) {
+							faces[f_off] = (face){v[0], v[1], v[2], WHITE};
+							norm[f_off] = GetTriangleNormal(vert[v[2]],vert[v[1]],vert[v[0]]);
+							v[1] = v[2], f_off++;
+							if (f_off >= f_alloc) {
+								f_alloc *= 2;
+								norm = realloc(norm, f_alloc*sizeof(vec3));
+								faces = realloc(faces, f_alloc*sizeof(face));
+							}
+							i=2;
+						}
+						do w++; while (buf[w] >= '0' && buf[w] <= '9');
+					}
+					if (buf[w] == '/') {
+						w++;
+						while (buf[w] != ' ' && buf[w]) w++;
+						if (!buf[w]) break;
+					}
+					w++;
+				}
+				break;
+			default:
+				fscanf(fp, "%*[^\n]\n");
+				break;
+		}
+	}
+	v_off++, f_off++;
+	vert = realloc(vert, v_off*sizeof(vec3));
+	norm = realloc(norm, f_off*sizeof(vec3));
+	faces = realloc(faces, f_off*sizeof(face));
+	return (obj){{0},{0},{1,1,1},MallocMat4x4(),f_off,v_off,vert,norm,faces};
+}
+
 int main() {
 	ElafriInit("Elafri 3D SDL example", (uvec2){1280, 960});
 
@@ -28,6 +90,8 @@ int main() {
 										cube.vert[cube.f[i].b],
 										cube.vert[cube.f[i].c]);
 	}
+	obj house = ReadObjFile("house.obj");
+	house.pos.z -= 10;
 
 	vec3 pos={0},rot={0}; //camera pos & rot
 	vec2 vFront = {0,1};
@@ -56,11 +120,13 @@ int main() {
 	if (kbd[SDL_SCANCODE_DOWN]) rot.x = modF32(rot.x+delta*2, 2*pi);
 
 	DepthReset(res);
-	GrObject(&Gr, cube, pos, rot, param);
+	const vec3 light = {0,1,0}; //light source from above
+	GrObject(&Gr, cube, pos, rot, light, param);
+	GrObject(&Gr, house, pos, rot, light, param);
 	if (t) //depth mode, colors screen by depth
 		for (int y=0; y<res.y; y++)
 			for (int x=0; x<res.x; x++) {
-				const F32 u = (0.5-depth[y*res.x+x]/2)*255 > 255 ? 255 : (int)roundf(255*depth[y*res.x+x]);
+				const F32 u = 2000*depth[y*res.x+x] > 255 ? 255 : (int)roundf(2000*depth[y*res.x+x]);
 				Gr.pal[y*res.x+x] = (color){u,u,u,255};
 			}
 	cube.rot.x = modF32(cube.rot.x+delta*0.31*pi,2*pi),
