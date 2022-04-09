@@ -95,7 +95,7 @@ void GrCircle(gr *b, const ivec2 O, int radius, int skip, color clr) {
 }
 void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
 	for (int y=-radius; y<=radius; y++)
-		for (int x=radius; x<=radius; x++)
+		for (int x=-radius; x<=radius; x++)
 			if (x*x+y*y <= radius*radius) //check if inside
 				GrPixel(b, O.x+x, O.y+y, clr);
 }
