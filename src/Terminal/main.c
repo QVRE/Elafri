@@ -1,7 +1,5 @@
 #include "Elafri.c"
 
-#define rx 100 //resolution
-#define ry 50
 #define FPS 50
 #define MPS 1000000 // s/μs
 

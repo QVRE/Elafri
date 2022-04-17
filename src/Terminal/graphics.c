@@ -16,9 +16,6 @@ typedef struct GrBuffer {color *pal; u32 w,h;} gr;
 char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
 
-color blankbuf_d[448];
-color *blankbuf = blankbuf_d + 128;
-
 static inline void GrInit(u32 grout_size) {
 	SineInit();
 	grout = malloc(grout_size);
