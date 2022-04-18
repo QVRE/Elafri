@@ -49,6 +49,26 @@ void Exit() {
 	exit(0);
 }
 
+F32 FramerateHandler(u32 max_fps) { //handles a framerate limit and returns delta time
+	static InitTimer(ftimer); //timer
+	int exec_time, wait_time;
+	static u32 fps; //last frame's fps
+	fps ^= (fps==0); //safeguards division by 0
+
+	StopTimer(ftimer);
+
+	exec_time = mod32(dt_usec(ftimer), 1000000); //Compute time it took for execution
+	wait_time = 1000000 / fps - exec_time; //Check if behind/ahead
+	fps = max(min(1000000*fps / (1000000-wait_time*fps), max_fps), 1); //Compute new fps
+
+	ftimer_tend.tv_usec = max(1000000 / max_fps - exec_time, 0);
+	ftimer_tend.tv_sec=0;
+	select(1, NULL, NULL, NULL, &ftimer_tend); //sleep if over max fps
+
+	StartTimer(ftimer);
+	return 1. / fps;
+}
+
 u32 Input() { //read stdin and sort keyboard and mouse input (CTRL + C quits)
 	u8 input[256]; //we read stdin to here
 	u32 kbdSize=0;
