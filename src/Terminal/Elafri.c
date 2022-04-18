@@ -1,9 +1,9 @@
 #ifndef _ELAFRI
 #define _ELAFRI
-
 #include <unistd.h>
 #include <termios.h> //for term flags
 #include <sys/ioctl.h>
+#include "evar.c"
 #include "graphics.c"
 //#include "pkg.c"
 

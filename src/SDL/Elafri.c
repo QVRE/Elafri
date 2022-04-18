@@ -1,6 +1,7 @@
 #ifndef _ELAFRI_SDL
 #define _ELAFRI_SDL
 #include <SDL2/SDL.h>
+#include "evar.c"
 #include "graphics.c" //this is a bit too important to be considered an optional component
 
 u8 kbd[322]; //array of key states
