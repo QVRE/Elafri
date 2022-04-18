@@ -1,9 +1,16 @@
 #ifndef _EVAR //file made to keep Elafri addons more modular
 #define _EVAR //make sure to compile with -flto to remove unnecessary garbage
-#define u8 unsigned char
-#define u16 unsigned short
-#define u32 unsigned int
-#define u64 unsigned long
+#include <sys/select.h>
+#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <math.h>
+
+#define u8 uint8_t
+#define u16 uint16_t
+#define u32 uint32_t
+#define u64 uint64_t
 #define F32 float
 #define F64 double
 
@@ -18,12 +25,6 @@
 #define dt_sec(t) (t ## _tend.tv_sec-t ## _tstart.tv_sec)
 #define dt_usec(t) (t ## _tend.tv_usec-t ## _tstart.tv_usec)
 #define Sleep(time) select(1, NULL, NULL, NULL, &time)
-
-#include <sys/select.h>
-#include <sys/time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 
 typedef struct FVector2 {F32 x,y;} vec2;
 typedef struct FVector3 {F32 x,y,z;} vec3;
