@@ -49,7 +49,7 @@ void Exit() {
 	exit(0);
 }
 
-u32 Input() { //read stdin and sort kbd and mouse input
+u32 Input() { //read stdin and sort keyboard and mouse input (CTRL + C quits)
 	u8 input[256]; //we read stdin to here
 	u32 kbdSize=0;
 	struct timeval mtv = {0,1}; //max sleep time
@@ -59,7 +59,7 @@ u32 Input() { //read stdin and sort kbd and mouse input
 	if (select(1,&fdread,NULL,NULL,&mtv)>0) { //check if stdin has data
 		const u32 insz = read(0,input,256); //256 bytes should be enough
 		for (u32 i=0; i<insz; i++) {
-			if (input[i]==3) Exit(); //ctrl + C
+			if (input[i]==3) Exit(); //ctrl + C (remove this to handle exits yourself)
 			if (input[i]==27) { //ESC
 				kbd[kbdSize] = 255; //prepare just in case
 				if (input[i+1]==79) {//F1-4 are ordered as 0-3
