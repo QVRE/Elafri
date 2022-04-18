@@ -11,7 +11,7 @@
 #define YELLOW (color){255,255,0,255}
 #define CYAN (color){0,255,255,255}
 
-typedef struct Color {u8 r,g,b,a;} color;
+typedef struct {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color *pal; u32 w,h;} gr;
 
 SDL_Window *window;

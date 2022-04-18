@@ -10,7 +10,7 @@
 #define YELLOW (color){255,255}
 #define CYAN (color){0,255,255}
 
-typedef struct AColor {u8 r,g,b,a;} color;
+typedef struct {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color *pal; u32 w,h;} gr;
 
 char *grout; //converted sequences get stored here before being printed
