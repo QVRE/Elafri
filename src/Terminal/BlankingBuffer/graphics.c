@@ -164,8 +164,8 @@ void draw(gr *buf) {
 	}
 	goto draw;
 }
-static inline void drawc(gr *buffer) { //draw and then clear
+static inline void drawc(gr *buffer, color clr) { //draw and then fill with color
 	draw(buffer);
-	GrFill(buffer, BLACK);
+	GrFill(buffer, clr);
 }
 #endif

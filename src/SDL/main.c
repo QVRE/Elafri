@@ -38,7 +38,7 @@ int main() {
 		GrCircle(&Gr, circles[i], 8.-7*sinf(time-time_offsets[i]), 8, CYAN);
 	}
 
-	drawc(&Gr);
+	drawc(&Gr, BLACK);
 
 	StopTimer(ftimer);
 	exec_time = mod32(dt_usec(ftimer),MPS); //Compute execution Δt

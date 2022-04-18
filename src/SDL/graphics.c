@@ -104,8 +104,8 @@ void draw(gr *buf) {
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
-static inline void drawc(gr *buffer) { //draw and then clear
+static inline void drawc(gr *buffer, color clr) { //draw and then fill with color
 	draw(buffer);
-	GrFill(buffer, BLACK);
+	GrFill(buffer, clr);
 }
 #endif

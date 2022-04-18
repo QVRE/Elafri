@@ -21,7 +21,7 @@ int main()
 		Input(); //get user input since last frame (returns written size to kbd)
 		GrLine(&Gr,(ivec2){0,0},m,CYAN); //line from 0,0 to mouse on Gr buffer
 		GrCircle(&Gr,m,5,ROT/16,GREEN); //draw unfinished circle around mouse (r=5)
-		drawc(&Gr); //outputs and clears buffer
+		drawc(&Gr, BLACK); //outputs and clears buffer
 
 		StopTimer(ftimer);
 		exec_time = mod32(dt_usec(ftimer),MPS); //Compute execution Δt
