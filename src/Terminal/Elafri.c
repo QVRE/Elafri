@@ -18,9 +18,8 @@
 #define END 70
 #define HOME 72
 
-u8 input[256]; //we read stdin to here
 u8 kbd[64]; //parsed keyboard input
-u32 kbdSize, mC; //size of input buffer & mouse code
+u32 mC; //mouse code
 ivec2 m; //mouse cords
 uvec2 res; //term resolution
 
@@ -50,12 +49,14 @@ void Exit() {
 	exit(0);
 }
 
-void Input(struct timeval *mtv) { //read stdin and sort kbd and mouse input
-	kbdSize=0;
+u32 Input() { //read stdin and sort kbd and mouse input
+	u8 input[256]; //we read stdin to here
+	u32 kbdSize=0;
+	struct timeval mtv = {0,1}; //max sleep time
 	fd_set fdread;
 	FD_ZERO(&fdread); //clear select set
 	FD_SET(0,&fdread); //add fd 0 (stdin)
-	if (select(1,&fdread,NULL,NULL,mtv)>0) { //check if stdin has data
+	if (select(1,&fdread,NULL,NULL,&mtv)>0) { //check if stdin has data
 		const u32 insz = read(0,input,256); //256 bytes should be enough
 		for (u32 i=0; i<insz; i++) {
 			if (input[i]==3) Exit(); //ctrl + C
@@ -79,6 +80,8 @@ void Input(struct timeval *mtv) { //read stdin and sort kbd and mouse input
 								kbd[kbdSize] = input[i+3]-49-(input[i+3]>53);
 							case 50:
 								if (input[i+3]!=126) {
+									if (input[i+4]==126) //F9-12 are ordered as 8-11
+										kbd[kbdSize] = input[i+3]-40-(input[i+3]>50);
 									i+=4;
 									break;
 								}
@@ -91,5 +94,6 @@ void Input(struct timeval *mtv) { //read stdin and sort kbd and mouse input
 			kbdSize++;
 		}
 	}
+	return kbdSize;
 }
 #endif

@@ -11,7 +11,6 @@ int main()
 
 	/*Timekeeping-related Inits*/
 	InitTimer(ftimer); //timer
-	struct timeval mtv = {0,1}; //needed for querying input
 	u32 fps = FPS;
 	int exec_time, wt;
 	F32 delta=0; //Δt per frame
@@ -19,7 +18,7 @@ int main()
 	RenderLoop:
 		StartTimer(ftimer);
 
-		Input(&mtv); //get user input since last frame
+		Input(); //get user input since last frame (returns written size to kbd)
 		GrLine(&Gr,(ivec2){0,0},m,CYAN); //line from 0,0 to mouse on Gr buffer
 		GrCircle(&Gr,m,5,ROT/16,GREEN); //draw unfinished circle around mouse (r=5)
 		drawc(&Gr); //outputs and clears buffer
