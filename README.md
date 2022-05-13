@@ -2,29 +2,44 @@
 
 ### An Engine focused on Simplicity and Tinkering
 
-This Engine was written to help me (and others) bring simple ideas to life.
+This Engine was written to help people bring simple ideas to life.
 The vision is simplicity, customizability and tinkering. I try to keep the line
 count as low as possible while also keeping it simple and easy to understand.
-Why? Because I don't want to drown it in unnecessary features and I also want
-it to be educational. The way I learned programming was through simple programs
-that managed to take something really complex and make it simple
+This is an educational and simplistic tool, sacrificing a lot of features for
+the sake of providing a basic set of tools for each case. The 3D graphics have
+a lot to be desired. I use euler angles and have relatively few functions for
+doing something advanced, the triangles are single color and textureless and
+there are just two drawing functions, one for 3D triangles and one for drawing
+Elafri objects.
 
-Elafri aims to provide 2D and 3D Graphics, ALSA Sound support, User Input,
-Terminal and SDL support and any other modular extensions for certain things
+If you are fine with the minimalistic nature of this Engine then here are some
+things that you can currently find and use:
+
+* 2D & 3D graphics and things like framerate handling
+* Both Keyboard and Mouse support for the terminal (and SDL of course)
+* and more addons in the src/ directory such as basic RNG, a package handler, etc
 
 #### People who can most benefit are those who:
 
-* make non commercial and simple Linux programs
+* make non commercial and simple programs
 * mostly care about making a hobby project
 * like to mess around and tinker with things
-* value simplicity over richness and high performance
+* just want a simple "wrapper" to help them focus on their main idea
 
 #### People who can't benefit are those who:
 
-* don't use Linux
-* don't use C
-* require complex graphics and sound
-* want to have portability
+* are looking for a big proper engine with many features
+* are not a big fan of tinkering their tool for every use case
+* aren't using C of course
+
+## Instructions
+
+The way I use Elafri in a project I make is by:
+
+* going into src/ and into the version I need
+* getting the .c files of that directory and the makefile
+* in some cases such as 3D graphics, I will get the contents of 3D/ instead
+* in case I need some addon like 3D math, RNG, etc, I take those c files from src/
 
 ## Design
 
@@ -37,22 +52,21 @@ files as well as all the extensions
 ## Tinkering
 
 I designed Elafri to very configurable and easy to explore.
-All the source code files are in the same directory as your project and you have
-maximum control over changing what happens without it being complicated to do so.
+I try my best to make sure that it is easy to tinker with and not a complex mess.
+For that reason, I have chosen to not have .h files and use .c files only.
 Many parts of the Engine can just be switched out and replaced and most of the
 time, only Main() will get affected by that because of Elafri's modular design.
 I took good care to keep a very simple design and even when you switch from the
-Terminal to the SDL extension, only the input mechanisms will change
+Terminal to the SDL version, only the input mechanisms will change
 
 ## Documentation
 
 So far, since I am the sole developer of everything regarding Elafri, there is
-no available documentation. However, it will likely be added at some point if
-I don't abandon this project
+no available documentation. However, it will likely be added at some point.
 
 ## Contact Information
 
-I am not sure if I will see an email as it is by pure chance that I check it
+I am not sure if I will see an email so try to use the ones bellow if you can
 
 - Email: nikos.raudonus@gmail.com
 - Telegram: @Nik051105
@@ -61,10 +75,5 @@ I am not sure if I will see an email as it is by pure chance that I check it
 
 ## Donations
 
-I do not expect donations nor do I recommend them, they are less of a need
-than they are an incentive for me to work more. I'm mostly just curious if
-anyone would even donate for something like this.
-
-- Monero: 44HT58Pq2rsBU11x7wCC8BLnJ9m9zvS73YaAQW2HvW31c7zbC2KBUMdTdd13VLg5Gs6DZDiXyfBV8V1unUuSyJDvPBpwuEd
-- Ethereum: 0x6c755184CFcD7bFa0c4bFb59357f3e9D56C4A082
-- Bitcoin: bc1qxt6lg7gelss8pghj98uhxhznj5wvqxa5kaxw4n
+I do not expect donations but if you wish to support Elafri, you can contact me
+for details like monero/ethereum wallet info or such.
