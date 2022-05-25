@@ -46,11 +46,13 @@ To use Elafri, you:
 * get the C files and optionally the makefile to see the compile args
 * to use some addon like 3D Math or Sound, you take those files from src/
 
+### 3D Cube rendered in Elafri
+
 
 ![3D Cube in Elafri](./Demo/Images/cube.gif)
 
 
-## The Standard
+## Design
 
 Elafri is designed with simplicity and developer freedom in mind.
 The Engine does not make the code you write run on top of it or inside it.
