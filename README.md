@@ -1,53 +1,62 @@
 # Elafri
 
-### An Engine focused on Simplicity and Tinkering
+### An Engine focused on Simplicity
 
-This Engine was written to help people bring simple ideas to life.
-The vision is simplicity, customizability and tinkering. I try to keep the line
-count as low as possible while also keeping it simple and easy to understand.
-This is an educational and simplistic tool, sacrificing a lot of features for
-the sake of providing a basic set of tools for each case. The 3D graphics have
-a lot to be desired. I use euler angles and have relatively few functions for
-doing something advanced, the triangles are single color and textureless and
-there are just two drawing functions, one for 3D triangles and one for drawing
-Elafri objects.
 
-If you are fine with the minimalistic nature of this Engine then here are some
-things that you can currently find and use:
+![Statue rendered in Elafri](./Demo/Images/statue.png)
 
-* 2D & 3D graphics and things like framerate handling
-* Both Keyboard and Mouse support for the terminal (and SDL of course)
-* and more addons in the src/ directory such as basic RNG, a package handler, etc
+
+Elafri is a free and open source oversimplistic and multi-environment Engine.
+This Engine is written in C and is ported to the Terminal and SDL.
+It is meant to provide very minimalistic features for simple problems and light
+programs. The vision is: A single task should need about a single function call.
+
+Nowadays, to do something simple, you have to first do many complicated things.
+One example is OpenGL where you need to spend days figuring out everything when
+it barely has anything to do with YOUR project.
+
+That's what this Engine aims to help with.
+It aims to keep the line count less than 1000 and be easy to look through.
+However, this comes with a few limitations and extras. For one, I've decided
+that if you don't need a specific set of functions such as 3D graphics or audio,
+it shouldn't be in the code that's being compiled. For this reason, I've made
+every component of Elafri be a seperate file that must be included in Elafri.c
+to be used in it (graphics get to stay included by default though). Lastly, due
+to the minimalism, features are very stripped. 3D graphics for example, have a
+lot to be desired. There are no textures and triangles are single color
 
 #### People who can most benefit are those who:
 
-* make non commercial and simple programs
-* mostly care about making a hobby project
-* like to mess around and tinker with things
-* just want a simple "wrapper" to help them focus on their main idea
+* want to make simple lightweight programs
+* are fine with minimalistic features such as no textures for 3D
+* just want the job done (play an audio buffer, draw a line, etc...)
 
 #### People who can't benefit are those who:
 
-* are looking for a big proper engine with many features
-* are not a big fan of tinkering their tool for every use case
-* aren't using C of course
+* need non minimalistic and proper functions and features/support
+* want those features to be portable to many use cases
+* do not want to have to tinker their tool for every use case
 
 ## Instructions
 
-The way I use Elafri in a project I make is by:
+To use Elafri, you:
 
-* going into src/ and into the version I need
-* getting the .c files of that directory and the makefile
-* in some cases such as 3D graphics, I will get the contents of 3D/ instead
-* in case I need some addon like 3D math, RNG, etc, I take those c files from src/
+* first need to select a port (Terminal, SDL, etc...)
+* go into that folder (ex. src/Terminal/)
+* get the C files and optionally the makefile to see the compile args
+* to use some addon like 3D Math or Sound, you take those files from src/
 
-## Design
+
+![3D Cube in Elafri](./Demo/Images/cube.gif)
+
+
+## The Standard
 
 Elafri is designed with simplicity and developer freedom in mind.
 The Engine does not make the code you write run on top of it or inside it.
 Instead, the developer is the one who invokes Elafri and choses what code runs
 and when it runs. The entire project aims to keep a low line count for the main
-files as well as all the extensions
+files as well as all the extensions.
 
 ## Tinkering
 
@@ -63,6 +72,7 @@ Terminal to the SDL version, only the input mechanisms will change
 
 So far, since I am the sole developer of everything regarding Elafri, there is
 no available documentation. However, it will likely be added at some point.
+Feel free to contact me for any questions.
 
 ## Contact Information
 
