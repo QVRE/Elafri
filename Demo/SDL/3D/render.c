@@ -3,7 +3,6 @@
 #include "graphics.c"
 #include "grmath.c"
 
-typedef struct DepthPoint2D {int x,y; F32 z;} dep2;
 typedef struct TriangleFace3D {
 	u32 a,b,c; color clr;
 } face;
@@ -23,7 +22,7 @@ static inline void AllocProjectedPointBuffer(int max_vertice_count) {
 static inline void AllocDepthBuffer(uvec2 resolution) {
 	depth = malloc(resolution.x*(resolution.y+1)*sizeof(F32));
 }
-static inline void DepthReset(uvec2 resolution) { //1 is considered 
+static inline void DepthReset(uvec2 resolution) { //1 is considered view distance
 	for (int i=0; i<resolution.x*resolution.y; i++) depth[i] = 1;
 }
 
@@ -42,26 +41,28 @@ void GrTriangle3D(gr *buf, vec3 Av, vec3 Bv, vec3 Cv, color clr) {
 
 	const F32 cx = buf->w*0.5, cy = buf->h*0.5; //center positions
 	//for perspective correct depth interpolation, we linearly interpolate 1/z instead of z
-	dep2 A = {roundf(cx+Av.x*cx), roundf(cy+Av.y*cy), 1. / Av.z};
-	dep2 B = {roundf(cx+Bv.x*cx), roundf(cy+Bv.y*cy), 1. / Bv.z};
-	dep2 C = {roundf(cx+Cv.x*cx), roundf(cy+Cv.y*cy), 1. / Cv.z};
-	dep2 swap; //swap conditionally to order from highest to lowest point
+	ivec2 A = {roundf(cx+Av.x*cx), roundf(cy+Av.y*cy)};
+	ivec2 B = {roundf(cx+Bv.x*cx), roundf(cy+Bv.y*cy)};
+	ivec2 C = {roundf(cx+Cv.x*cx), roundf(cy+Cv.y*cy)};
+	F32 Az = 1. / Av.z, Bz = 1. / Bv.z, Cz = 1. / Cv.z;
+	ivec2 swap; //swap conditionally to order from highest to lowest point
+	F32 swapz;
 	if (A.y > B.y)
-		swap = A, A = B, B = swap;
+		swap = A, A = B, B = swap, swapz = Az, Az = Bz, Bz = swapz;
 	if (B.y > C.y)
-		swap = B, B = C, C = swap;
+		swap = B, B = C, C = swap, swapz = Bz, Bz = Cz, Cz = swapz;
 	if (A.y > B.y)
-		swap = A, A = B, B = swap;
+		swap = A, A = B, B = swap, swapz = Az, Az = Bz, Bz = swapz;
 	int i = A.y, dep_off = A.y*buf->w, roundl, roundr;
 	F32 left, right, lstep, rstep, ldep, rdep, ldstep, rdstep; //sides, depth and steps per Δy
 	F32 depstep, curdep; //depth step and current pixel's depth
 	if (B.y > A.y) { //draw top section of triangle
 		lstep = 1. / (B.y-A.y), rstep = 1. / (C.y-A.y); //put these here as temp
-		ldstep = (B.z-A.z)*lstep, rdstep = (C.z-A.z)*rstep, lstep *= B.x-A.x, rstep *= C.x-A.x;
+		ldstep = (Bz-Az)*lstep, rdstep = (Cz-Az)*rstep, lstep *= B.x-A.x, rstep *= C.x-A.x;
 		if (lstep > rstep) //check if it's not left to right
 			left = lstep, lstep = rstep, rstep = left, //swap position steps for sides
 			left = ldstep, ldstep = rdstep, rdstep = left; //swap depth steps for sides
-		left = A.x, right = A.x, ldep = A.z, rdep = A.z;
+		left = A.x, right = A.x, ldep = Az, rdep = Az;
 		if (B.y > 0) {
 			if (i < -1) //if y clipping, skip clipping section
 				i = -i-1, left+=lstep*i, right+=rstep*i, ldep+=ldstep*i, rdep+=rdstep*i,
@@ -96,16 +97,16 @@ void GrTriangle3D(gr *buf, vec3 Av, vec3 Bv, vec3 Cv, color clr) {
 		}
 	} else if (C.y > B.y) { //means Ay = By so we treat it as upside down triangle
 		if (A.x < B.x) //left to right order
-			lstep = 1./(C.y-A.y), rstep = 1./(C.y-B.y), left=A.x, right=B.x, ldep=A.z, rdep=B.z,
-			ldstep = (C.z-A.z)*lstep, rdstep = (C.z-B.z)*rstep, lstep*=C.x-A.x, rstep*=C.x-B.x;
+			lstep = 1./(C.y-A.y), rstep = 1./(C.y-B.y), left=A.x, right=B.x, ldep=Az, rdep=Bz,
+			ldstep = (Cz-Az)*lstep, rdstep = (Cz-Bz)*rstep, lstep*=C.x-A.x, rstep*=C.x-B.x;
 		else
-			rstep = 1./(C.y-A.y), lstep = 1./(C.y-B.y), right=A.x, left=B.x, rdep=A.z, ldep=B.z,
-			rdstep = (C.z-A.z)*rstep, ldstep = (C.z-B.z)*lstep, rstep*=C.x-A.x, lstep*=C.x-B.x;
+			rstep = 1./(C.y-A.y), lstep = 1./(C.y-B.y), right=A.x, left=B.x, rdep=Az, ldep=Bz,
+			rdstep = (Cz-Az)*rstep, ldstep = (Cz-Bz)*lstep, rstep*=C.x-A.x, lstep*=C.x-B.x;
 		goto Draw2Cy;
 	}
 	if (C.y > B.y) { //draw bottom section of triangle
 		lstep = 1. / (C.y-i), rstep = 1. / (C.y-i);
-		ldstep = (C.z-ldep)*lstep, rdstep = (C.z-rdep)*rstep, lstep*=C.x-left, rstep*=C.x-right;
+		ldstep = (Cz-ldep)*lstep, rdstep = (Cz-rdep)*rstep, lstep*=C.x-left, rstep*=C.x-right;
 Draw2Cy:
 		if (i < 0) //if y clipping, skip clipping section
 			i = -i, left+=lstep*i, right+=rstep*i, ldep+=ldstep*i, rdep+=rdstep*i,
@@ -199,7 +200,7 @@ void GrObject(gr *buf, obj object, vec3 pos, vec3 rot, vec3 light, const vec3 pa
 				dz = n_a.z / (n_b.z - n_a.z),
 				points[cnt] = (vec3){(n_a.x-(n_b.x-n_a.x)*dz)*100, (n_a.y-(n_b.y-n_a.y)*dz)*100, 0.01*inv_dist},
 				cnt++;
-			
+
 			GrTriangle3D(buf, points[0], points[1], points[2], c);
 			if (cnt == 4) //if two points in view, two clippings with screen, thus quad
 				GrTriangle3D(buf, points[0], points[2], points[3], c);
