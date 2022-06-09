@@ -23,7 +23,7 @@ static inline void AllocProjectedPointBuffer(int max_vertice_count) {
 static inline void AllocDepthBuffer(uvec2 resolution) {
 	depth = malloc(resolution.x*(resolution.y+1)*sizeof(F32));
 }
-static inline void DepthReset(uvec2 resolution) { //1 is considered 
+static inline void DepthReset(uvec2 resolution) { //1 is considered view distance
 	for (int i=0; i<resolution.x*resolution.y; i++) depth[i] = 1;
 }
 
