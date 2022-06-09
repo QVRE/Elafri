@@ -1,21 +1,22 @@
 # Structure of source directory
 
-Each directory holds a version of Elafri and the directories inside those have
-extra or modified features for those versions such as an example of 3D graphics.
+Each directory holds a port of Elafri and its graphics handling.
+This should, along with the Elafri Standard, allow you to just replace these
+files in your project to port it to a different interface.
 
 ## Versions
 
-* Terminal: The original Elafri that runs on the terminal
-* SDL: Elafri modified to provide the same features in SDL
+* [Terminal](./Terminal)
+* [SDL](./SDL)
 
 ### Addons
 
 This directory holds addons that should (usually) work with all Elafri versions.
 Here's a log of all the addons:
 
-* evar: just code to make things easier
+* evar: provides definitions of Elafri.c (included when ELAFRI is not defined)
 * rnd: a wrapper for getting random floating point numbers
-* pkg: a system to a lot of data together more easily
+* pkg: like a filesystem but for arrays. Allows simpler storage and retrieval
 * sfx: a not yet finished system for playing sounds
 * grmath: a collection of functions for 3D math such as vectors and matrices
-* render: Elafri's system for drawing 3D objects and triangles
+* render: Draws 3D Triangles and Objects
