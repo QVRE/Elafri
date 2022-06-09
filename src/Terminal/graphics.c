@@ -115,7 +115,7 @@ void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
 }
 
 void gremit(u8 val, const u32 end) { //convert u8 to ASCII decimal + add an extra char
-	u32 pair = end; //lower part is set to ending character. Things are printed low to high
+	u32 pair = end; //Things are printed backwards so we start from the end
 	u32 size = 1;
 	while (val) {
 		pair <<= 8;
@@ -134,10 +134,10 @@ void draw(gr *buf) {
 
 	draw:
 	c = buf->pal[y*buf->w+x];
-	if (c.r!=last.r || c.g!=last.g || c.b!=last.b) {
+	if (c.r!=last.r || c.g!=last.g || c.b!=last.b) { //if new char is different
 		*(u64*)(&grout[groff]) = 0x3b323b38345b1b; // \e[48;2; backwards
 		groff += 7;
-		gremit(c.r,';'); //emit red value in ASCII + a semicolon at the end (for an ESC seq)
+		gremit(c.r,';'); //emit red value in ASCII + a semicolon at the end
 		gremit(c.g,';'); //same with green
 		gremit(c.b,'m'); //complete sequence with m for color (escape sequence)
 	}
