@@ -28,6 +28,6 @@ int main() {
 	}
 	drawc(&Gr, BLACK);
 
-	time = fmodf(time + FramerateHandler(FPS), 2*pi);
+	time = fmodf(time + FramerateHandler(FPS), 2*M_PI);
 	goto RenderLoop;
 }

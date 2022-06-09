@@ -1,15 +1,56 @@
-#ifndef _ELAFRI_SDL
-#define _ELAFRI_SDL
+#ifndef ELAFRI
+#define ELAFRI
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <math.h>
+#include <sys/select.h>
+#include <sys/time.h>
 #include <SDL2/SDL.h>
-#include "evar.c"
-#include "graphics.c" //this is a bit too important to be considered an optional component
+
+//functions and definitions provided by Elafri
+#define u8 uint8_t
+#define u16 uint16_t
+#define u32 uint32_t
+#define u64 uint64_t
+#define F32 float //the IEEE 754 guarantees this I think
+#define F64 double
+
+#define max(x,y) ((x) > (y) ? (x) : (y))
+#define min(x,y) ((x) < (y) ? (x) : (y))
+
+#define InitTimer(t) struct timeval t ## _tstart, t ## _tend
+#define StartTimer(t) gettimeofday(&t ## _tstart, NULL)
+#define StopTimer(t) gettimeofday(&t ## _tend, NULL)
+#define dt_sec(t) (t ## _tend.tv_sec-t ## _tstart.tv_sec)
+#define dt_usec(t) (t ## _tend.tv_usec-t ## _tstart.tv_usec)
+#define Sleep(time) select(1, NULL, NULL, NULL, &time)
+
+typedef struct FVector2 {F32 x,y;} vec2;
+typedef struct FVector3 {F32 x,y,z;} vec3;
+typedef struct UVector2 {u32 x,y;} uvec2;
+typedef struct IVector2 {int x,y;} ivec2;
+
+//mathematically accurate modulo functions for negative numbers
+int mod32(int x, int m) {
+	return (x%m + m)%m;
+}
+long mod64(long x, long m) {
+	return (x%m + m)%m;
+}
+F32 modF32(F32 x, F32 m) {
+	return fmodf(fmodf(x,m)+m,m);
+}
+
+//include Elafri addons here
+#include "graphics.c"
 
 u8 kbd[322]; //array of key states
 ivec2 m; //last observed mouse cords
 u32 mC; //mouse bitmask
 
 void ElafriInit(char* win_title, uvec2 resolution) { //Init procedures should be added here
-	SineInit();
+	GrInit();
 
 	SDL_Init(SDL_INIT_VIDEO); //SDL init
 	res = resolution;

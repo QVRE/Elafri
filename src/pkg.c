@@ -1,6 +1,8 @@
 #ifndef _EPKG
 #define _EPKG
+#ifndef ELAFRI //for when used alone
 #include "evar.c"
+#endif
 
 typedef struct PackageFileInfo {
 	u64 ID; //8 byte unique identifier

@@ -1,6 +1,9 @@
 #ifndef _EGFX
 #define _EGFX
+#include <math.h>
+#ifndef ELAFRI //for when used alone
 #include "evar.c"
+#endif
 
 #define BLACK (color){0}
 #define WHITE (color){255,255,255}
@@ -10,6 +13,12 @@
 #define YELLOW (color){255,255}
 #define CYAN (color){0,255,255}
 
+#define ROT 1024 //accuracy of precomputes for sine/cosine
+
+F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
+F32 *wsin;
+F32 *wcos;
+
 typedef struct {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color *pal; u32 w,h;} gr;
 
@@ -17,8 +26,11 @@ char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
 
 static inline void GrInit(u32 grout_size) {
-	SineInit();
-	grout = malloc(grout_size);
+	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
+		sinebuf[i] = sinf((2*M_PI/ROT)*i);
+	wsin = sinebuf+ROT; //allows for negative indexes too (up to ROT)
+	wcos = &wsin[ROT/4];
+	grout = malloc(grout_size); //for escape code printing ()
 	grout[0] = '\e', grout[1] = '[', grout[2] = 'H'; //first 3 bytes always do home escape code
 }
 
@@ -40,14 +52,13 @@ void GrFree(gr *buf) {
 }
 
 void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
-	int dx = B.x-A.x; //Δx & Δy
-	int dy = B.y-A.y;
+	int dx = B.x-A.x, dy = B.y-A.y; //Δx & Δy
 	GrPixel(b, B.x, B.y, clr);
 	if (abs(dx) > abs(dy))
-		for (int c=0,i=A.x; i != B.x; i+=s(dx), c++)
+		for (int c=0,i=A.x; i != B.x; i += dx < 0 ? -1 : 1, c++)
 			GrPixel(b, i, A.y+(c*dy)/abs(dx), clr);
 	else
-		for (int c=0,i=A.y; i != B.y; i+=s(dy), c++)
+		for (int c=0,i=A.y; i != B.y; i += dy < 0 ? -1 : 1, c++)
 			GrPixel(b, A.x+(c*dx)/abs(dy), i, clr);
 }
 void GrTriangleWire(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {

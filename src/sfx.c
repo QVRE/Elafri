@@ -1,6 +1,8 @@
 #ifndef _ESFX
 #define _ESFX
+#ifndef ELAFRI //for when used alone
 #include "evar.c"
+#endif
 #include <alsa/asoundlib.h>
 #include <pthread.h>
 
