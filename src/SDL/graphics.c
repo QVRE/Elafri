@@ -21,7 +21,7 @@ F32 *wsin;
 F32 *wcos;
 
 typedef struct {u8 r,g,b,a;} color;
-typedef struct GrBuffer {color *pal; u32 w,h;} gr;
+typedef struct GrBuffer {color *dat; u32 w,h;} gr;
 
 SDL_Window *window;
 SDL_Renderer *renderer;
@@ -40,16 +40,16 @@ gr GrBuffer(u32 width, u32 height) {
 }
 static inline void GrPixel(gr *buf, int x, int y, color clr) {
 	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
-		buf->pal[y*buf->w+x] = clr;
+		buf->dat[y*buf->w+x] = clr;
 }
 void GrFill(gr *buf, const color clr) {
-	color *ptr = buf->pal; //point to start of graphics buffer
+	color *ptr = buf->dat; //point to start of graphics buffer
 	u32 size = buf->w*buf->h;
 	while (size--)
 		*ptr++ = clr;
 }
 void GrFree(gr *buf) {
-	free(buf->pal);
+	free(buf->dat);
 }
 
 void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
@@ -116,7 +116,7 @@ void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
 }
 
 void draw(gr *buf) {
-	SDL_UpdateTexture(texture, NULL, buf->pal, buf->w * sizeof(color));
+	SDL_UpdateTexture(texture, NULL, buf->dat, buf->w * sizeof(color));
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }

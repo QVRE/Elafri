@@ -20,7 +20,7 @@ F32 *wsin;
 F32 *wcos;
 
 typedef struct {u8 r,g,b,a;} color;
-typedef struct GrBuffer {color *pal; u32 w,h;} gr;
+typedef struct GrBuffer {color *dat; u32 w,h;} gr;
 
 char *grout; //converted sequences get stored here before being printed
 u32 groff; //gr offset. How filled grout is
@@ -39,16 +39,16 @@ gr GrBuffer(u32 width, u32 height) {
 }
 static inline void GrPixel(gr *buf, int x, int y, color clr) {
 	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
-		buf->pal[y*buf->w+x] = clr;
+		buf->dat[y*buf->w+x] = clr;
 }
 void GrFill(gr *buf, const color clr) {
-	color *ptr = buf->pal; //point to start of graphics buffer
+	color *ptr = buf->dat; //point to start of graphics buffer
 	u32 size = buf->w*buf->h;
 	while (size--)
 		*ptr++ = clr;
 }
 void GrFree(gr *buf) {
-	free(buf->pal);
+	free(buf->dat);
 }
 
 void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
@@ -133,7 +133,7 @@ void draw(gr *buf) {
 	color c;
 
 	draw:
-	c = buf->pal[y*buf->w+x];
+	c = buf->dat[y*buf->w+x];
 	if (c.r!=last.r || c.g!=last.g || c.b!=last.b) { //if new char is different
 		*(u64*)(&grout[groff]) = 0x3b323b38345b1b; // \e[48;2; backwards
 		groff += 7;
