@@ -38,7 +38,11 @@ static inline void GrInit() {
 gr GrBuffer(u32 width, u32 height) {
 	return (gr){calloc(width*height, sizeof(color)), width, height};
 }
-static inline void GrPixel(gr *buf, int x, int y, color clr) {
+void GrFree(gr *buf) {
+	free(buf->dat);
+}
+
+void GrPixel(gr *buf, int x, int y, color clr) {
 	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
 		buf->dat[y*buf->w+x] = clr;
 }
@@ -47,9 +51,6 @@ void GrFill(gr *buf, const color clr) {
 	u32 size = buf->w*buf->h;
 	while (size--)
 		*ptr++ = clr;
-}
-void GrFree(gr *buf) {
-	free(buf->dat);
 }
 
 void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
@@ -63,6 +64,7 @@ void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
 		for (int c=0,i=A.y; i != B.y; i += dy < 0 ? -1 : 1, c++)
 			GrPixel(b, A.x+(c*dx)/abs(dy), i, clr);
 }
+
 void GrTriangleWire(gr *buf, ivec2 A, ivec2 B, ivec2 C, color clr) {
 	GrLine(buf, A, B, clr);
 	GrLine(buf, B, C, clr);
