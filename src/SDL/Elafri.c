@@ -49,18 +49,18 @@ u8 kbd[322]; //array of key states
 ivec2 m; //last observed mouse cords
 u32 mC; //mouse bitmask
 
-void ElafriInit(char* win_title, uvec2 resolution) { //Init procedures should be added here
+void ElafriInit(char* win_title, u32 w, u32 h) { //Init procedures
 	GrInit();
 
 	SDL_Init(SDL_INIT_VIDEO); //SDL init
-	res = resolution;
+	res = (uvec2){w, h};
 	const int undef = SDL_WINDOWPOS_UNDEFINED;
 	//make window
-	window = SDL_CreateWindow(win_title, undef, undef, res.x, res.y, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow(win_title, undef, undef, w, h, SDL_WINDOW_OPENGL);
 	//make renderer that's accelerated and synced with refresh rate
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //likely not necessary for graphics.c
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, res.x, res.y);
+	//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //likely not necessary for graphics.c
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_STATIC, w, h);
 }
 
 void Exit() { //intended for any important exit procedures

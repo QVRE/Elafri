@@ -3,7 +3,7 @@
 #define FPS 60
 
 int main() {
-	ElafriInit("Test", (uvec2){640, 480});
+	ElafriInit("Test", 640, 480);
 
 	gr Gr = GrBuffer(res.x,res.y);
 
