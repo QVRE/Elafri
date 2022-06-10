@@ -114,7 +114,8 @@ void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
 				GrPixel(b, O.x+x, O.y+y, clr);
 }
 
-void gremit(u8 val, const u32 end) { //convert u8 to ASCII decimal + add an extra char
+//write 8 bit number to grout and add a pad character at the end
+void gremit(u8 val, const u32 end) {
 	u32 pair = end; //Things are printed backwards so we start from the end
 	u32 size = 1;
 	while (val) {
@@ -126,7 +127,7 @@ void gremit(u8 val, const u32 end) { //convert u8 to ASCII decimal + add an extr
 	*(u32*)(&grout[groff]) = pair; //emit pair to grout
 	groff += size;
 }
-void draw(gr *buf) {
+void Draw(gr *buf) {
 	groff = 3; //first 3 bytes will always be the escape code to go to 0,0
 	color last = BLACK; //small optimization, kinda similar to RLE
 	u32 x=0, y=0;
@@ -158,8 +159,8 @@ void draw(gr *buf) {
 	}
 	goto draw;
 }
-static inline void drawc(gr *buffer, color clr) { //draw and then fill with color
-	draw(buffer);
+static inline void DrawFill(gr *buffer, color clr) { //output and then fill with color
+	Draw(buffer);
 	GrFill(buffer, clr);
 }
 #endif

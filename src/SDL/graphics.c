@@ -115,13 +115,13 @@ void GrCircleFilled(gr *b, const ivec2 O, const int radius, color clr) {
 				GrPixel(b, O.x+x, O.y+y, clr);
 }
 
-void draw(gr *buf) {
+void Draw(gr *buf) {
 	SDL_UpdateTexture(texture, NULL, buf->dat, buf->w * sizeof(color));
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
-static inline void drawc(gr *buffer, color clr) { //draw and then fill with color
-	draw(buffer);
+static inline void DrawFill(gr *buffer, color clr) { //draw and then fill with color
+	Draw(buffer);
 	GrFill(buffer, clr);
 }
 #endif
