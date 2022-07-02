@@ -2,6 +2,9 @@
 #define _EGRMATH
 #include <stdlib.h>
 #include <math.h>
+#ifndef ELAFRI //for when used alone
+#include "evar.c"
+#endif
 
 typedef struct FVector4 {F32 x,y,z,w;} vec4;
 typedef F32 *mat4;
