@@ -1,5 +1,5 @@
 #ifndef _EGRMATH //Elafri's small collection of functions I wrote for 3D math
-#define _EGRMATH //actual sin/cos function calls to keep it simpler. worth the performance loss
+#define _EGRMATH
 #include <stdlib.h>
 #include <math.h>
 
