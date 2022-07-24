@@ -62,7 +62,7 @@ void GrTriangle3D(gr *buf, F32 *depth, vec3 At, vec3 Bt, vec3 Ct, color clr) {
 	y_small = min(At.y, Bt.y), y_small = min(y_small, Ct.y);
 	y_big = max(At.y, Bt.y), y_big = max(y_big, Ct.y);
 	if (y_big < -1 || y_small > 1) return; //not visible
-	const int x_clipped = x_small < -1 || (u32)roundf(x_big*buf->w) >= buf->w; //optimization flag
+	const int x_clipped = x_small < -1 || x_big * buf->w >= buf->w - 1; //optimization flag
 
 	const F32 cx = buf->w*0.5, cy = buf->h*0.5; //center positions
 	//for perspective correct depth interpolation, we linearly interpolate 1/z instead of z
@@ -179,7 +179,7 @@ void GrTexturedTriangle3D(gr *buf, F32 *depth, vertex At, vertex Bt, vertex Ct, 
 	y_small = min(At.y, Bt.y), y_small = min(y_small, Ct.y);
 	y_big = max(At.y, Bt.y), y_big = max(y_big, Ct.y);
 	if (y_big < -1 || y_small > 1) return; //not visible
-	const int x_clipped = x_small < -1 || (u32)roundf(x_big*buf->w) >= buf->w; //optimization flag
+	const int x_clipped = x_small < -1 || x_big * buf->w >= buf->w - 1; //optimization flag
 
 	const F32 cx = buf->w*0.5, cy = buf->h*0.5; //center positions
 	//for perspective correct depth interpolation, we linearly interpolate 1/z instead of z
