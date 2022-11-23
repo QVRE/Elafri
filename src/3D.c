@@ -16,7 +16,7 @@ typedef struct ColoredTriangleFace3D { //single color textureless
 typedef struct Object3D {
 	vec3 pos, rot, scale; mat4 mat; //if you use GrObject(), you dont need to set the matrix
 	u32 facecount, vertcount;
-	vec3 *vert; void *tri; vec3 *norm; //tri's type is either face of color_face
+	vec3 *vert; void *tri; vec3 *norm; //tri's type is either face or color_face
 	gr *texture; //set texture to NULL if you're using color faces
 } obj;
 
@@ -337,16 +337,13 @@ void GrObject(gr *buf, F32 *depth, obj object, vec3 pos, vec3 rot, vertex light,
 				if (c_inside) points[cnt] = proj_c, cnt++;
 				if (b_inside ^ c_inside) //this is a simplified line equation where f(b)=0, f(c)=1
 					t = (1. - 100*n_b.z) / (n_c.z - n_b.z), t0 = 100. - t,
-					points[cnt] = (vec3){t*n_c.x + t0*n_b.x, t*n_c.y + t0*n_b.y, 0.01*inv_dist},
-					cnt++;
+					points[cnt++] = (vec3){t*n_c.x + t0*n_b.x, t*n_c.y + t0*n_b.y, 0.01*inv_dist};
 				if (a_inside ^ c_inside) //we multiply things by 100 because we get z=0.01 attributes
 					t = (1. - 100*n_a.z) / (n_c.z - n_a.z), t0 = 100. - t,
-					points[cnt] = (vec3){t*n_c.x + t0*n_a.x, t*n_c.y + t0*n_a.y, 0.01*inv_dist},
-					cnt++;
+					points[cnt++] = (vec3){t*n_c.x + t0*n_a.x, t*n_c.y + t0*n_a.y, 0.01*inv_dist};
 				if (a_inside ^ b_inside)
 					t = (1. - 100*n_a.z) / (n_b.z - n_a.z), t0 = 100. - t,
-					points[cnt] = (vec3){t*n_b.x + t0*n_a.x, t*n_b.y + t0*n_a.y, 0.01*inv_dist},
-					cnt++;
+					points[cnt++] = (vec3){t*n_b.x + t0*n_a.x, t*n_b.y + t0*n_a.y, 0.01*inv_dist};
 
 				GrTriangle3D(buf, depth, points[0], points[1], points[2], clr);
 				if (cnt == 4) //if two points in view, two clippings with screen, thus quad
@@ -356,7 +353,7 @@ void GrObject(gr *buf, F32 *depth, obj object, vec3 pos, vec3 rot, vertex light,
 	} else { //for textured triangles, same thing as above but with textures
 		gr *texture = object.texture; //grab object's texture pointer
 		for (u32 i=0; i < object.facecount; i++) {
-			const face tri = ((face*)object.tri)[i];
+			const face tri = ((face*)object.tri)[i]; //fetch triangle
 			const vec3 norm = Vec3Rot(object.norm[i], object.rot); //world space normal
 			const vec3 pnt_a = proj_pnt[tri.a], pnt_b = proj_pnt[tri.b], pnt_c = proj_pnt[tri.c];
 			vertex proj_a, proj_b, proj_c; //projected points + UV
@@ -377,21 +374,21 @@ void GrObject(gr *buf, F32 *depth, obj object, vec3 pos, vec3 rot, vertex light,
 					n_b = {proj_b.x*pb, proj_b.y*pb, pb},
 					n_c = {proj_c.x*pc, proj_c.y*pc, pc};
 				F32 t, t0; //for interpolating all the vertex attributes (x0 = 1 - x)
-				if (a_inside) points[0] = proj_a, cnt++;
-				if (b_inside) points[cnt] = proj_b, cnt++;
-				if (c_inside) points[cnt] = proj_c, cnt++;
+				if (a_inside) points[0] = proj_a, cnt = 1;
+				if (b_inside) points[cnt++] = proj_b;
+				if (c_inside) points[cnt++] = proj_c;
 				if (b_inside ^ c_inside) //this is a simplified line equation where f(b)=0, f(c)=1
 					t = (0.01 - n_b.z) / (n_c.z - n_b.z), t0 = 1. - t,
-					points[cnt] = (vertex){100*(t*n_c.x + t0*n_b.x), 100*(t*n_c.y + t0*n_b.y),
-						0.01*inv_dist, t*proj_c.u + t0*proj_b.u, t*proj_c.v + t0*proj_b.v}, cnt++;
+					points[cnt++] = (vertex){100*(t*n_c.x + t0*n_b.x), 100*(t*n_c.y + t0*n_b.y),
+						0.01*inv_dist, t*proj_c.u + t0*proj_b.u, t*proj_c.v + t0*proj_b.v};
 				if (a_inside ^ c_inside) //we multiply things by 100 because we get the z=0.01 attributes
 					t = (0.01 - n_a.z) / (n_c.z - n_a.z), t0 = 1. - t,
-					points[cnt] = (vertex){100*(t*n_c.x + t0*n_a.x), 100*(t*n_c.y + t0*n_a.y),
-						0.01*inv_dist, t*proj_c.u + t0*proj_a.u, t*proj_c.v + t0*proj_a.v}, cnt++;
+					points[cnt++] = (vertex){100*(t*n_c.x + t0*n_a.x), 100*(t*n_c.y + t0*n_a.y),
+						0.01*inv_dist, t*proj_c.u + t0*proj_a.u, t*proj_c.v + t0*proj_a.v};
 				if (a_inside ^ b_inside)
 					t = (0.01 - n_a.z) / (n_b.z - n_a.z), t0 = 1. - t,
-					points[cnt] = (vertex){100*(t*n_b.x + t0*n_a.x), 100*(t*n_b.y + t0*n_a.y),
-						0.01*inv_dist, t*proj_b.u + t0*proj_a.u, t*proj_b.v + t0*proj_a.v}, cnt++;
+					points[cnt++] = (vertex){100*(t*n_b.x + t0*n_a.x), 100*(t*n_b.y + t0*n_a.y),
+						0.01*inv_dist, t*proj_b.u + t0*proj_a.u, t*proj_b.v + t0*proj_a.v};
 
 				GrTexturedTriangle3D(buf, depth, points[0], points[1], points[2], texture, lit);
 				if (cnt == 4) //if two points in view, two clippings with screen, thus quad
