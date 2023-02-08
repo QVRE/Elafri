@@ -1,10 +1,7 @@
-#ifndef _ESFX
-#define _ESFX
-#ifndef ELAFRI //for when used alone
-#include "evar.c"
-#endif
+#include <stdio.h>
 #include <alsa/asoundlib.h>
 #include <pthread.h>
+#include "evar.h"
 
 #define SND_DEVICE "default"
 #define SND_BUFFER_SIZE 8192
@@ -55,7 +52,5 @@ int main() { //test function
 		}
 		snd_pcm_writei(playback_handle, snd_buf, frames_to_write);
 	}
-	snd_pcm_close (playback_handle);
-	exit (0);
+	snd_pcm_close(playback_handle);
 }
-#endif

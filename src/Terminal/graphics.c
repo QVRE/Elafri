@@ -1,45 +1,5 @@
-#ifndef _EGFX
-#define _EGFX
-#include <math.h>
-#ifndef ELAFRI //for when used alone
-#include "evar.c"
-#endif
-
-#define BLACK (color){0}
-#define WHITE (color){255,255,255}
-#define RED (color){255}
-#define GREEN (color){0,255}
-#define BLUE (color){0,0,255}
-#define YELLOW (color){255,255}
-#define CYAN (color){0,255,255}
-
-#define ROT 1024 //accuracy of precomputes for sine/cosine
-
-F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
-F32 *wsin;
-F32 *wcos;
-
-typedef struct {u8 r,g,b,a;} color;
-typedef struct GrBuffer {color *dat; u32 w,h;} gr;
-
-char *grout; //converted sequences get stored here before being printed
-u32 groff; //gr offset. How filled grout is
-
-static inline void GrInit(u32 grout_size) {
-	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
-		sinebuf[i] = sinf((2*M_PI/ROT)*i);
-	wsin = sinebuf+ROT; //allows for negative indexes too (up to ROT)
-	wcos = &wsin[ROT/4];
-	grout = malloc(grout_size); //for escape code printing ()
-	grout[0] = '\e', grout[1] = '[', grout[2] = 'H'; //first 3 bytes always do home escape code
-}
-
-gr GrBuffer(u32 width, u32 height) {
-	return (gr){calloc(width*height, sizeof(color)), width, height};
-}
-void GrFree(gr *buf) {
-	free(buf->dat);
-}
+#include <unistd.h>
+#include "graphics.h"
 
 void GrPixel(gr *buf, int x, int y, color clr) {
 	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
@@ -53,7 +13,8 @@ void GrFill(gr *buf, const color clr) {
 }
 
 void GrLine(gr *b, ivec2 A, ivec2 B, color clr) {
-	int dx = B.x-A.x, dy = B.y-A.y; //Δx & Δy
+	int dx = B.x-A.x; //Δx & Δy
+	int dy = B.y-A.y;
 	GrPixel(b, B.x, B.y, clr);
 	if (abs(dx) > abs(dy))
 		for (int c=0,i=A.x; i != B.x; i += dx < 0 ? -1 : 1, c++)
@@ -161,8 +122,3 @@ void Draw(gr *buf) {
 	}
 	goto draw;
 }
-static inline void DrawFill(gr *buffer, color clr) { //output and then fill with color
-	Draw(buffer);
-	GrFill(buffer, clr);
-}
-#endif

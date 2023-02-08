@@ -1,24 +1,27 @@
-# Structure of source directory
+# Overview
 
-Each directory holds a port of Elafri and its graphics handling.
-This should, along with the Elafri Standard, allow you to just replace these
-files in your project to port it to a different interface.
+Each directory holds a port of Elafri for that platform. You also need [evar.h](./evar.h).
+Elafri does not have a standardized input system so you will have to handle user input for
+each port differently depending on that port's Elafri.h file.
+You will also likely want to use an extra component like 3D rendering or image handling.
+For that, see the Components section below.
 
 ## Released Versions
 
 * [Terminal](./Terminal)
 * [SDL](./SDL)
 
-### Addons
+### Components
 
-This directory holds addons that should (usually) work with all Elafri versions.
-Here's a list of all the addons:
+In this directory, you can see many files and below is a description of what each one does.
+Add any of these files in your project to use them. Most of them require evar.h
 
 #### General
 
-* evar: provides definitions of Elafri.c (included when ELAFRI is not defined)
-* rnd: a wrapper for getting random floating point numbers
+* evar: provides definitions for types and vectors (used by Elafri)
+* rnd: a wrapper for getting pseudo-random floating point numbers
 * pkg: like a filesystem but for arrays. Allows simpler storage and retrieval
+* image: for reading some image file formats
 
 #### Audio
 
@@ -26,6 +29,7 @@ Here's a list of all the addons:
 
 #### 3D Rendering
 
-* grmath: functions for 3D math like vector/matrix rotation, view transform, etc
-* 3D: full 3D rendering for both textured and untextured objects
-* 3Dc: for 3D rendering of only untextured objects with single color faces
+* grmath: functions for 3D math like vector/matrix rotations, view transform, etc
+* 3D: rendering for both textured and untextured 3D objects (dont use together with 3Dc)
+* 3Dc: rendering for only untextured 3D objects (faces are single-color)
+* object: for reading some 3D object file formats

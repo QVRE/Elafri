@@ -1,42 +1,7 @@
-#ifndef _ERENDER //3D graphics for Elafri
-#define _ERENDER
-#include "graphics.c"
-#include "grmath.c"
-
-typedef struct { //5D vector
-	F32 x,y,z,u,v;
-} vertex;
-typedef struct ColoredTriangleFace3D { //single color textureless
-	u32 a,b,c; color clr;
-} face;
-
-typedef struct Object3D {
-	vec3 pos, rot, scale; mat4 mat; //if you use GrObject(), you dont need to set the matrix
-	u32 facecount, vertcount;
-	vec3 *vert; face *tri; vec3 *norm; //vertices, faces and normals
-} obj;
-
-vec3 *proj_pnt; //projected point buffer. Store point coords on-screen here
-
-//This buffer is used for temporary on-screen coordinates for points per object
-//You should pass the maximum number of vertices an object can have in your program
-static inline void MallocProjectedPointBuffer(int max_vertice_count) {
-	proj_pnt = malloc(max_vertice_count*sizeof(vec3));
-}
-
-F32* MallocDepthBuffer(u32 w, u32 h) {
-	return malloc(w*(h+1)*sizeof(F32));
-}
-static inline void DepthReset(F32 *depth, u32 w, u32 h) { //1 is considered view distance
-	for (int i=0; i<w*h; i++) depth[i] = 1;
-}
-
-static inline void ObjectMakeMatrix(obj object) {
-	Mat4x4Set(object.mat, object.pos, object.rot, object.scale);
-}
+#include <math.h>
+#include "3Dc.h"
 
 //returns a vector with the attributes of the camera
-//FOV is in degrees 0-360, aspect ratio is h/w
 vec3 MakeCamera(F32 fov, F32 aspect_ratio, F32 view_distance) {
 	vec3 param;
 	param.y = 1 / tanf(fov*M_PI/360); //trigonometry to turn degrees to plane tan(θ/2) -> radians
@@ -45,17 +10,16 @@ vec3 MakeCamera(F32 fov, F32 aspect_ratio, F32 view_distance) {
 	return param;
 }
 
-// Draw a 3D single color triangle on buffer and depth buffer array
 void GrTriangle3D(gr *buf, F32 *depth, vec3 At, vec3 Bt, vec3 Ct, color clr) {
 	F32 x_small, y_small, z_small, x_big, y_big; //smallest and biggest coordinates on screen
 	//discard triangle if outside the screen / view
-	z_small = min(At.z, Bt.z), z_small = min(z_small, Ct.z);
+	z_small = At.z < Bt.z ? At.z : Bt.z, z_small = z_small < Ct.z ? z_small : Ct.z;
 	if (z_small >= 1) return; //too far away
-	x_small = min(At.x, Bt.x), x_small = min(x_small, Ct.x);
-	x_big = max(At.x, Bt.x), x_big = max(x_big, Ct.x);
+	x_small = At.x < Bt.x ? At.x : Bt.x, x_small = x_small < Ct.x ? x_small : Ct.x;
+	x_big = At.x > Bt.x ? At.x : Bt.x, x_big = x_big > Ct.x ? x_big : Ct.x;
 	if (x_big < -1 || x_small > 1) return; //not visible
-	y_small = min(At.y, Bt.y), y_small = min(y_small, Ct.y);
-	y_big = max(At.y, Bt.y), y_big = max(y_big, Ct.y);
+	y_small = At.y < Bt.y ? At.y : Bt.y, y_small = y_small < Ct.y ? y_small : Ct.y;
+	y_big = At.y > Bt.y ? At.y : Bt.y, y_big = y_big > Ct.y ? y_big : Ct.y;
 	if (y_big < -1 || y_small > 1) return; //not visible
 	const int x_clipped = x_small < -1 || x_big * buf->w >= buf->w - 1; //optimization flag
 
@@ -153,10 +117,10 @@ void GrTriangle3D(gr *buf, F32 *depth, vec3 At, vec3 Bt, vec3 Ct, color clr) {
 	}
 }
 
-//pos and rot are camera variables ( pos -> position, rot -> rotation (euler) )
-//params are gotten from MakeCamera() and light is a vertex with xyz and uv params
-//light's xyz points TO the light source and uv is base light and how strong the source is (u >= v)
+//we will first project the vertices to the cache and then clip and render each triangle
+//there is no backface culling and lighting is directional. We clip at z = 0.01
 void GrObject(gr *buf, F32 *depth, obj object, vec3 pos, vec3 rot, vertex light, vec3 param) {
+	if (object.vertcount < proj_pnt_size) return; //not enough cache size
 	ObjectMakeMatrix(object);
 	Mat4x4ApplyView(object.mat, pos, rot);
 	const F32 inv_dist = 1 / param.z; //inverse view distance (how far we can see)
@@ -208,4 +172,3 @@ void GrObject(gr *buf, F32 *depth, obj object, vec3 pos, vec3 rot, vertex light,
 		}
 	}
 }
-#endif

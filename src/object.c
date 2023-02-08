@@ -1,8 +1,6 @@
-#ifndef _OBJECT_PARSER //reading object files
-#define _OBJECT_PARSER
 #include <stdlib.h>
 #include <stdio.h>
-#include "3D.c"
+#include "object.h"
 
 // .obj file reading
 
@@ -58,4 +56,3 @@ obj ReadOBJ(char *filename) {
 	faces = realloc(faces, f_off * sizeof(color_face));
 	return (obj){{0},{0},{1,1,1}, MallocMat4x4(), f_off,v_off, vert,faces,norm, NULL};
 }
-#endif

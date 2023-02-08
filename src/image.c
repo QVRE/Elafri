@@ -1,8 +1,6 @@
-#ifndef _IMAGE_PARSER //code to read and write some image formats
-#define _IMAGE_PARSER //also provides the Downsample() function to lower the resolutions
 #include <stdlib.h>
 #include <stdio.h>
-#include "graphics.c"
+#include "image.h"
 
 //downsamples an image by applying the new image's grid onto the old image and getting the
 //average values of the sums of the old pixels inside every grid block
@@ -221,4 +219,3 @@ void WriteQOI(char *filename, gr *buf) {
 	fclose(fp);
 	free(dat);
 }
-#endif

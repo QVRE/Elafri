@@ -1,46 +1,4 @@
-#ifndef _EGFX_SDL
-#define _EGFX_SDL
-#include <math.h>
-#include <SDL2/SDL.h>
-#ifndef ELAFRI //for when used alone
-#include "evar.c"
-#endif
-
-#define BLACK (color){0,0,0,255}
-#define WHITE (color){255,255,255,255}
-#define RED (color){255,0,0,255}
-#define GREEN (color){0,255,0,255}
-#define BLUE (color){0,0,255,255}
-#define YELLOW (color){255,255,0,255}
-#define CYAN (color){0,255,255,255}
-
-#define ROT 1024 //accuracy of precomputes for sine/cosine
-
-F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
-F32 *wsin;
-F32 *wcos;
-
-typedef struct {u8 r,g,b,a;} color;
-typedef struct GrBuffer {color *dat; u32 w,h;} gr;
-
-SDL_Window *window;
-SDL_Renderer *renderer;
-SDL_Texture *texture;
-uvec2 res; //window resolution
-
-static inline void GrInit() {
-	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes
-		sinebuf[i] = sinf((2*M_PI/ROT)*i);
-	wsin = sinebuf+ROT; //allows for negative indexes too (up to ROT)
-	wcos = &wsin[ROT/4];
-}
-
-gr GrBuffer(u32 width, u32 height) {
-	return (gr){calloc(width*height, sizeof(color)), width, height};
-}
-void GrFree(gr *buf) {
-	free(buf->dat);
-}
+#include "graphics.h"
 
 void GrPixel(gr *buf, int x, int y, color clr) {
 	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
@@ -122,8 +80,3 @@ void Draw(gr *buf) {
 	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
-static inline void DrawFill(gr *buffer, color clr) { //draw and then fill with color
-	Draw(buffer);
-	GrFill(buffer, clr);
-}
-#endif
