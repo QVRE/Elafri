@@ -36,6 +36,7 @@ void WritePkg(char *filename, pkg p, u32 max_files) {
 
 pkg ReadPkg(char *filename) {
 	FILE *fp = fopen(filename,"rb");
+	if (!fp) return (pkg){NULL, 0};
 	u32 totalf, freef, filecount;
 	fread(&totalf, 1, sizeof(u32), fp); //table size
 	fread(&freef, 1, sizeof(u32), fp); //free space
@@ -58,6 +59,7 @@ pkg ReadPkg(char *filename) {
 
 void AddFile(char *package, pfile file) {
 	FILE *fp = fopen(package,"r+b");
+	if (!fp) return;
 	u32 totalf, freef, filecount;
 	fread(&totalf, 1, sizeof(u32), fp);
 	fread(&freef, 1, sizeof(u32), fp);
@@ -93,6 +95,7 @@ void AddFile(char *package, pfile file) {
 
 void RmFile(char *package, u64 ID) {
 	FILE *fp = fopen(package,"r+b");
+	if (!fp) return;
 	u32 totalf, freef, filecount;
 	fread(&totalf, 1, sizeof(u32), fp);
 	fread(&freef, 1, sizeof(u32), fp);
