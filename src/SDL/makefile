@@ -1,7 +1,11 @@
-BUILD_FLAGS = -O3 -flto -fno-math-errno -lm -lSDL2
+libs = -lm -lSDL2
+obj = Elafri.o graphics.o
 
-default: main.c
-	$(CC) $(BUILD_FLAGS) main.c -o example
+main: main.c $(obj)
+	$(CC) $(libs) -O3 $(obj) main.c -o out
+
+$(obj): %.o: %.c
+	$(CC) -O3 -c $< -o $@
 
 clean:
-	rm example
+	rm out $(obj)

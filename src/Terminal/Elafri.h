@@ -26,12 +26,12 @@
 #define END 70
 #define HOME 72
 
-u8 kbd[64]; //parsed keyboard input
-u32 mC; //mouse code
-ivec2 m; //mouse cords
-uvec2 res; //term resolution
+extern u8 kbd[64]; //parsed keyboard input
+extern u32 mC; //mouse code
+extern ivec2 m; //mouse cords
+extern uvec2 res; //term resolution
 
-struct termios oldTermFlags; //used to restore previous state of terminal
+extern struct termios oldTermFlags; //used to restore previous state of terminal
 
 void GetResolution(u32 *x, u32 *y); //writes resolution of terminal to x & y
 

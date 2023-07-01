@@ -1,5 +1,13 @@
 #include "graphics.h"
 
+F32 sinebuf[ROT*2+ROT/4];
+F32 *wsin;
+F32 *wcos;
+SDL_Window *window;
+SDL_Renderer *renderer;
+SDL_Texture *texture;
+uvec2 res;
+
 void GrPixel(gr *buf, int x, int y, color clr) {
 	if (x >= 0 && y >= 0 && x < buf->w && y < buf->h)
 		buf->dat[y*buf->w+x] = clr;

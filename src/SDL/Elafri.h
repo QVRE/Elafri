@@ -13,9 +13,9 @@
 #define dt_usec(t) (t ## _tend.tv_usec-t ## _tstart.tv_usec)
 #define Sleep(time) select(1, NULL, NULL, NULL, &time)
 
-u8 kbd[322]; //array of key states
-ivec2 m; //last observed mouse cords
-u32 mC; //mouse bitmask
+extern u8 kbd[322]; //array of key states
+extern ivec2 m; //last observed mouse cords
+extern u32 mC; //mouse bitmask
 
 void ElafriInit(char* win_title, u32 w, u32 h); //will initialize Elafri and open a new window
 

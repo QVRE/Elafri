@@ -1,6 +1,9 @@
 #include <math.h>
 #include "3D.h"
 
+vec3 *proj_pnt;
+u32 proj_pnt_size = 0;
+
 //returns a vector with the attributes of the camera
 vec3 MakeCamera(F32 fov, F32 aspect_ratio, F32 view_distance) {
 	vec3 param;

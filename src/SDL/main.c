@@ -1,4 +1,4 @@
-#include "Elafri.c"
+#include "Elafri.h"
 
 #define FPS 60
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <math.h>
 #include "evar.h"
@@ -13,17 +14,17 @@
 
 #define ROT 1024 //accuracy of precomputes for sine/cosine
 
-F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
-F32 *wsin;
-F32 *wcos;
+extern F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
+extern F32 *wsin;
+extern F32 *wcos;
 
 typedef struct {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color *dat; u32 w,h;} gr;
 
-SDL_Window *window;
-SDL_Renderer *renderer;
-SDL_Texture *texture;
-uvec2 res; //window resolution
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
+extern SDL_Texture *texture;
+extern uvec2 res; //window resolution
 
 static inline void GrInit() {
 	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes

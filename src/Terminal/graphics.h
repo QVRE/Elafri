@@ -13,15 +13,15 @@
 
 #define ROT 1024 //accuracy of precomputes for sine/cosine
 
-F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
-F32 *wsin;
-F32 *wcos;
+extern F32 sinebuf[ROT*2+ROT/4]; //precomputes for fast Circle drawing and lookup
+extern F32 *wsin;
+extern F32 *wcos;
 
 typedef struct {u8 r,g,b,a;} color;
 typedef struct GrBuffer {color *dat; u32 w,h;} gr;
 
-char *grout; //converted sequences get stored here before being printed
-u32 groff; //gr offset. How filled grout is
+extern char *grout; //converted sequences get stored here before being printed
+extern u32 groff; //gr offset. How filled grout is
 
 static inline void GrInit(u32 grout_size) {
 	for (int i=0; i<ROT*2+ROT/4; i++) //Initialize sinewave precomputes

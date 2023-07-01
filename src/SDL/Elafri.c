@@ -1,5 +1,9 @@
 #include "Elafri.h"
 
+u8 kbd[322];
+ivec2 m;
+u32 mC;
+
 void ElafriInit(char* win_title, u32 w, u32 h) { //Init procedures
 	GrInit();
 

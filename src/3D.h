@@ -23,8 +23,8 @@ typedef struct Object3D {
 	gr *texture; //set texture to NULL if you're using color faces
 } obj;
 
-vec3 *proj_pnt; //projected point buffer used while rendering an object
-u32 proj_pnt_size = 0; //size of allocated array
+extern vec3 *proj_pnt; //projected point buffer used while rendering an object
+extern u32 proj_pnt_size; //size of allocated array
 
 //this buffer is used to cache the on-screen projection of each vertex of an object
 //call this function using the max amount of vertices each object can end up having
