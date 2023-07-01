@@ -29,7 +29,7 @@ obj ReadOBJ(char *filename) {
 			case 'f':
 				u32 a=1, b=1, c=1, d=1; //the face might be a quad
 				//read each element and skip anything right after it until a space or newline
-				int n = fscanf(fp, " %u%*[^ ] %u%*[^ ] %u%*[^\n ] %u%*[^\n]\n", &a, &b, &c, &d);
+				int n = fscanf(fp, " %u %u %u %u\n", &a, &b, &c, &d);
 				a--, b--, c--, d--; //make offset start from 0
 				faces[f_off] = (color_face){a, b, c, WHITE};
 				norm[f_off] = GetTriangleNormal(vert[c], vert[b], vert[a]);
