@@ -123,7 +123,7 @@ void GrTriangle3D(gr *buf, F32 *depth, vec3 At, vec3 Bt, vec3 Ct, color clr) {
 //we will first project the vertices to the cache and then clip and render each triangle
 //there is no backface culling and lighting is directional. We clip at z = 0.01
 void GrObject(gr *buf, F32 *depth, obj object, vec3 pos, vec3 rot, vertex light, vec3 param) {
-	if (object.vertcount < proj_pnt_size) return; //not enough cache size
+	if (object.vertcount > proj_pnt_size) return; //not enough cache size
 	ObjectMakeMatrix(object);
 	Mat4x4ApplyView(object.mat, pos, rot);
 	const F32 inv_dist = 1 / param.z; //inverse view distance (how far we can see)
