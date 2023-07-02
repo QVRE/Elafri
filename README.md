@@ -8,34 +8,19 @@
 
 Elafri is a free and open source oversimplistic and multi-environment Engine.
 This Engine is written in C and is ported to the Terminal and SDL.
-It is meant to provide very minimalistic features for simple problems and light
-programs. The vision is: A single task should need about a single function call.
+It is meant to provide very minimalistic features you can build upon for light programs.
+The vision is to make everything as simple as possible (one action = one function).
 
-Nowadays, to do something simple, you have to first do many complicated things.
-One example is OpenGL where you need to spend days figuring out everything when
-it barely has anything to do with YOUR project.
-
-That's what this Engine aims to help with.
-It aims to keep the line count less than 1000 and be easy to look through.
-However, this comes with a few limitations and extras. For one, I've decided
-that if you don't need a specific set of functions such as 3D graphics or audio,
-it shouldn't be in the code that's being compiled. For this reason, I've made
-every component of Elafri be a seperate file that must be included in Elafri.c
-to be used in it (graphics get to stay included by default though). Lastly, due
-to the minimalism, features are very stripped. 3D graphics for example, have a
-lot to be desired. There are no textures and triangles are single color
+I have purposely kept the linecount very low to make it easy to go through and
+I've made the Engine's components modular (you need to include something to use it).
+This makes things much easier and also allows you to easily tinker with any part of
+the Engine that you're using.
 
 #### People who can most benefit are those who:
 
 * want to make simple lightweight programs
-* are fine with minimalistic features such as no textures for 3D
-* just want the job done (play an audio buffer, draw a line, etc...)
-
-#### People who can't benefit are those who:
-
-* need non minimalistic and proper functions and features/support
-* want those features to be portable to many use cases
-* do not want to have to tinker their tool for every use case
+* are fine with minimalistic features
+* just want the job done (play audio, draw an object, etc...)
 
 ## Instructions
 
@@ -43,8 +28,8 @@ To use Elafri, you:
 
 * first need to select a port (Terminal, SDL, etc...)
 * go into that folder (ex. src/Terminal/)
-* get the C files and optionally the makefile to see the compile args
-* to use some addon like 3D Math or Sound, you take those files from src/
+* get all the files (main.c is an example program)
+* to use some addon like 3D or file reading, you take those files from src/
 
 ### 3D Cube rendered in Elafri
 
@@ -52,40 +37,29 @@ To use Elafri, you:
 ![3D Cube in Elafri](./Demo/Images/cube.gif)
 
 
-## Design
+## Design philosophy
 
 Elafri is designed with simplicity and developer freedom in mind.
 The Engine does not make the code you write run on top of it or inside it.
 Instead, the developer is the one who invokes Elafri and choses what code runs
 and when it runs. The entire project aims to keep a low line count for the main
-files as well as all the extensions.
-
-## Tinkering
-
-I designed Elafri to very configurable and easy to explore.
-I try my best to make sure that it is easy to tinker with and not a complex mess.
-For that reason, I have chosen to not have .h files and use .c files only.
-Many parts of the Engine can just be switched out and replaced and most of the
-time, only Main() will get affected by that because of Elafri's modular design.
-I took good care to keep a very simple design and even when you switch from the
-Terminal to the SDL version, only the input mechanisms will change
+files as well as all the extensions. Due to the minimalistic nature of it,
+I also don't go too much into error handling. If you do something really
+dumb, don't expect my function to return -1, it will likely just crash.
 
 ## Documentation
 
-So far, since I am the sole developer of everything regarding Elafri, there is
-no available documentation. However, it will likely be added at some point.
+Since this Engine has not gotten much attention, I haven't felt the need to
+write an exhaustive documentation but I may do it in the future.
 Feel free to contact me for any questions.
 
 ## Contact Information
 
-I am not sure if I will see an email so try to use the ones bellow if you can
-
-- Email: nikos.raudonus@gmail.com
-- Telegram: @Nik051105
-- Discord: Nik#6291
-- Tox: 23F3ECA183E9824F271FD3A90ECBE54FCE2BC847228487F6E152F20B0D4E3D4B910873FBB377
+- Email: niko7V@proton.me
+- Discord: niko64
+- Matrix: @niko:catgirl.cloud
 
 ## Donations
 
 I do not expect donations but if you wish to support Elafri, you can contact me
-for details like monero/ethereum wallet info or such.
+for details.
