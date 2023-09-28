@@ -100,7 +100,7 @@ void GrTriangle3D(gr *buf, F32 *depth, vec3 At, vec3 Bt, vec3 Ct, color clr) {
 			left.x -= left_step.x*B.y, left.y -= left_step.y*B.y,
 			right.x -= right_step.x*B.y, right.y -= right_step.y*B.y, B.y = 0;
 	}
-	if (C.y > buf->h) C.y = buf->h; //if this is true, we know that B.y will be equal to C.y
+	if (C.y >= buf->h) C.y = buf->h-1; //if this is true, we know that B.y will be equal to C.y
 	for (int i=B.y, offset=i*buf->w; i <= C.y; i++, offset+=buf->w) { //draw bottom section
 		int L = roundf(left.x), R = roundf(right.x); //get x coords of sides in pixels
 		const F32 div = 1. / (R-L); //Due to the IEEE standard, it shouldn't crash if L = R
