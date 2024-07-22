@@ -101,6 +101,7 @@ gr ReadQOI(char *filename) {
 
 	color pix = {0, 0, 0, 255};
 	color table[64]; //a running array
+	for (u32 i = 0; i < 64; i++) table[i] = (color){0,0,0,0};
 	u8 *dat = malloc(data_size);
 	fread(dat, 1, data_size, fp);
 	fclose(fp);
@@ -170,6 +171,7 @@ void WriteQOI(char *filename, gr *buf) {
 
 	color pix = {0, 0, 0, 255};
 	color table[64]; //a running array
+	for (u32 i = 0; i < 64; i++) table[i] = (color){0,0,0,0};
 	u32 run = 0, size = 0, max_size = 8192; //start with 8KB allocated
 	u8 *dat = malloc(max_size + 8);
 	for (u32 i = 0; i < buf->w*buf->h; i++) {
